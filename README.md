@@ -7,7 +7,8 @@ Make sure you have Python [installed locally](http://install.python-guide.org). 
 ## Deploy!
 For an existing Heroku app,  
 `
-heroku login
+heroku login  
 heroku git:remote -a [app name]
 `  
+### OR
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
