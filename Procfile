@@ -1,1 +1,1 @@
-web: gunicorn --log-file=- --workers=1 --bind=0.0.0.0:$PORT hello:app
+web: gunicorn -b :$PORT hello:app
