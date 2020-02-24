@@ -1,13 +1,22 @@
 # Marsbot
 
 ## Running Locally
+First sync heroku config vars to local `.env` file:
+```
+heroku config -s > .env
+```
+Then run:
+```
+heroku local
+```
 
-Make sure you have Python installed. To push to Heroku, you'll need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 
 ## Deploy!
-For an existing Heroku app,  
-`heroku login`  
-`heroku git:remote -a [app name]`
-
-### OR
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+First add heroku remote to your local git repo:
+```
+heroku git:remote -a [app name]
+```
+Then just push to the heroku remote:
+```
+git push heroku master
+```
