@@ -1,37 +1,46 @@
+import os
 from functools import wraps
 
 from flask import session, redirect, url_for, request
-from authlib.flask.client import RemoteApp, OAuth
+from authlib.flask.client import OAuth
 from authlib.common.urls import add_params_to_uri
 from loginpass import create_flask_blueprint
 from loginpass._core import OAuthBackend, UserInfo, map_profile_fields
+
+oauth_token_session_key = 'foursquare_oauth_token'
 
 
 def handle_authorize(remote, token, user_info):
     if token:
         save_token(token)
-    next = request.form.get('next', url_for('checkins'))
+    next = request.form.get('next', url_for('home'))
     return redirect(next)
 
-
-oauth_token_session_key = 'foursquare_oauth_token'
 
 def require_token(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if oauth_token_session_key not in session:
+        if oauth_token_session_key not in session and \
+           not request.endpoint.startswith('loginpass'):
             return redirect(url_for('loginpass_foursquare.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
 
 
 def fetch_token():
-    return session[oauth_token_session_key]
+    return session.get(oauth_token_session_key)
 
 
 def save_token(token):
     session[oauth_token_session_key] = token
     print('Token Saved: ', session[oauth_token_session_key])
+
+
+def add_token_to_uri(uri, token=None):
+    access_token = (token or fetch_token() or {}).get('access_token')
+    api_version = os.environ['FOURSQUARE_API_VERSION']
+    params = [('oauth_token', access_token), ('v', api_version)]
+    return add_params_to_uri(uri, params)
 
 
 def foursquare_compliance_fix(session):
@@ -44,15 +53,13 @@ def foursquare_compliance_fix(session):
     session.register_compliance_hook('access_token_response', _token_response)
 
     def _non_compliant_param_name(url, headers, data):
-        access_token = session.token.get('access_token')
-        params = [('oauth_token', access_token), ('v', '20200223')]
-        url = add_params_to_uri(url, params)
+        url = add_token_to_uri(url, session.token)
         return url, headers, data
 
     session.register_compliance_hook('protected_request', _non_compliant_param_name)
 
 
-class Foursquare(object):
+class Foursquare(OAuthBackend):
     OAUTH_TYPE = '2.0'
     OAUTH_NAME = 'foursquare'
     OAUTH_CONFIG = {
