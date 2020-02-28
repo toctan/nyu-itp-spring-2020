@@ -1,6 +1,6 @@
 import os
-from flask import Flask
-from oauth2 import oauth, foursquare_bp, require_token
+from flask import Flask, g
+from oauth2 import oauth, foursquare_bp, require_login
 from api_proxy import FoursquareAPIProxy
 
 app = Flask(__name__)
@@ -13,14 +13,14 @@ oauth.init_app(app)
 
 
 @app.before_request
-@require_token
+@require_login
 def before_request():
     pass
 
 
 @app.route('/')
 def home():
-    return 'Hello World!'
+    return 'Welcome, {}!'.format(g.user.sub)
 
 
 app.wsgi_app = FoursquareAPIProxy(app.wsgi_app, {
