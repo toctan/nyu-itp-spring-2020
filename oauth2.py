@@ -1,5 +1,6 @@
 import os
 from functools import wraps
+from datetime import timedelta
 
 from flask import session, redirect, url_for, request, g
 from authlib.flask.client import OAuth
@@ -22,7 +23,10 @@ def handle_authorize(remote, token, user):
     session[user_id_session_key] = user.sub
     session[oauth_token_session_key] = token
     next = request.form.get('next', url_for('home'))
-    return redirect(next)
+    response = redirect(next)
+    max_age = timedelta(days=31).total_seconds()
+    response.set_cookie(oauth_token_session_key, token['access_token'], max_age=max_age)
+    return response
 
 
 def require_login(f):
@@ -35,8 +39,7 @@ def require_login(f):
     return decorated_function
 
 
-def add_token_to_uri(uri, token):
-    access_token = (token or {}).get('access_token')
+def add_token_to_uri(uri, access_token):
     api_version = os.environ['FOURSQUARE_API_VERSION']
     params = [('oauth_token', access_token), ('v', api_version)]
     return add_params_to_uri(uri, params)
@@ -52,7 +55,7 @@ def foursquare_compliance_fix(session):
     session.register_compliance_hook('access_token_response', _token_response)
 
     def _non_compliant_param_name(url, headers, data):
-        url = add_token_to_uri(url, session.token)
+        url = add_token_to_uri(url, session.token['access_token'])
         return url, headers, data
 
     session.register_compliance_hook('protected_request', _non_compliant_param_name)

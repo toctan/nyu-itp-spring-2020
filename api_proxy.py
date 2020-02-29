@@ -3,11 +3,7 @@ import os
 from flask import Flask
 from werkzeug.middleware.http_proxy import ProxyMiddleware
 from werkzeug.utils import redirect
-from oauth2 import fetch_token, add_token_to_uri
-
-
-app = Flask(__name__)
-app.secret_key = os.environ['FLASK_SECRET_KEY']
+from oauth2 import add_token_to_uri, oauth_token_session_key
 
 
 class FoursquareAPIProxy(ProxyMiddleware):
@@ -21,12 +17,11 @@ class FoursquareAPIProxy(ProxyMiddleware):
         if not any(path.startswith(prefix) for prefix in self.targets):
             return self.app(environ, start_response)
 
-        with app.request_context(environ):
-            token = fetch_token()
-            if not token and environ.get('HTTP_X_REQUESTED_WITH') != 'XMLHttpRequest':
-                # TODO: add next to redirect url
-                return redirect('/login')(environ, start_response)
+        token = environ['werkzeug.request'].cookies.get(oauth_token_session_key)
+        if not token and environ.get('HTTP_X_REQUESTED_WITH') != 'XMLHttpRequest':
+            # TODO: add next to redirect url
+            return redirect('/login')(environ, start_response)
 
-            environ = self._add_token(environ, token)
-            return super(FoursquareAPIProxy, self).__call__(
-                environ, start_response)
+        environ = self._add_token(environ, token)
+        return super(FoursquareAPIProxy, self).__call__(
+            environ, start_response)
