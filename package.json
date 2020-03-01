@@ -1,0 +1,10 @@
+{
+  "engines": {
+    "node": "13.x",
+    "yarn": "1.x"
+  },
+  "scripts": {
+    "heroku-prebuild": "cd web && yarn install",
+    "build": "cd web && yarn run build"
+  }
+}
