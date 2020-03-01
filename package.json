@@ -6,5 +6,8 @@
   "scripts": {
     "heroku-prebuild": "cd web && yarn install",
     "build": "cd web && yarn run build"
-  }
+  },
+  "cacheDirectories": [
+    "web/node_modules"
+   ]
 }
