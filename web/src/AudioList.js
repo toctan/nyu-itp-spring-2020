@@ -1,3 +1,4 @@
+import qs from 'qs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Avatar, Box, IconButton, Container, Grid, Typography} from '@material-ui/core';
@@ -39,7 +40,18 @@ class AudioList extends React.Component {
     }));
   }
 
-  renderAudio = (audio) => {
+  handleDelete(index) {
+    const audio = this.state.audios[index];
+    const audios = this.state.audios.slice();
+    audios.splice(index, 1);
+
+    foursquare.post('demo/marsbot/audio/delete', qs.stringify({
+      audioFileId: audio.id,
+    })).then(resp => this.setState({audios: audios}))
+      .catch(error => console.log(error));
+  }
+
+  renderAudio = (audio, index) => {
     const { classes } = this.props;
     const venue = audio.venues[0];
     const category = venue.categories[0].icon;
@@ -65,14 +77,16 @@ class AudioList extends React.Component {
           />
 
           <CardActions>
-            <IconButton aria-label="add to favorites">
+            <IconButton aria-label="play">
               <PlayArrow />
               <Box component="span" fontSize="body1.fontSize">
                 {audio.playCount}
               </Box>
             </IconButton>
 
-            <IconButton aria-label="share">
+            <IconButton
+              onClick={() => this.handleDelete(index)}
+              aria-label="delete">
               <Delete />
             </IconButton>
 

@@ -13,4 +13,6 @@ foursquare.interceptors.request.use(config => {
   return config;
 });
 
+foursquare.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default foursquare;
