@@ -1,9 +1,10 @@
 import React from 'react';
-import {Box, Button, Typography} from '@material-ui/core';
+import {Box, Button} from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import {getUser, logOut, UserContext} from './User';
 import Nav from './Nav';
+import AudioList from './AudioList';
 
 
 class App extends React.Component {
@@ -32,28 +33,26 @@ class App extends React.Component {
 
         <UserContext.Provider value={user}>
           <Nav handleLogOut={this.handleLogOut} />
-          <Container component="main" maxWidth="xs">
-            <Box display="flex" flexDirection="column" justifyContent="center" height="100vh">
-              {
-                user ?
-                  <Container component="main">
-                    <Typography variant="h2">Signed In</Typography>
-                  </Container>
-                :
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  href="/login"
-                >
-                  Sign In with Foursquare
-                </Button>
-              }
-            </Box>
-          </Container>
-
-
+          {
+            user ?
+              <AudioList /> :
+              <Container component="main" maxWidth="xs">
+                <Box display="flex"
+                     flexDirection="column"
+                     justifyContent="center"
+                     height="100vh">
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    href="/login"
+                  >
+                    Sign In with Foursquare
+                  </Button>
+                </Box>
+              </Container>
+          }
         </UserContext.Provider>
       </React.Fragment>
     );
