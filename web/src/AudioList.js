@@ -2,8 +2,8 @@ import qs from 'qs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Avatar, Box, IconButton, Container, Grid, Typography} from '@material-ui/core';
-import {Card, CardHeader, CardActions} from '@material-ui/core';
-import { PlayArrow, Delete } from '@material-ui/icons';
+import { Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import {UserContext} from './User';
 import foursquare from './APIClient';
@@ -13,8 +13,12 @@ const styles = theme => ({
   avatar: {
     backgroundColor: "#f94878",
   },
-  title: {
-    fontSize: 14,
+  cardContent: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    '& > audio': {
+      maxWidth: "100%"
+    }
   },
 });
 
@@ -31,9 +35,11 @@ class AudioList extends React.Component {
 
   componentDidMount() {
     const user = this.context;
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('user_id') || user.id;
     foursquare.get('demo/marsbot/audio/snippetuser', {
       params: {
-        userId: user.id,
+        userId: userId,
       }
     }).then(resp => this.setState({
       audios: resp.data.response.audio
@@ -57,7 +63,7 @@ class AudioList extends React.Component {
     const category = venue.categories[0].icon;
     return (
       <Grid item key={audio.id} xs={12} sm={6} md={4}>
-        <Card className={classes.card}>
+        <Card>
           <CardHeader
             avatar={
               <Avatar
@@ -66,7 +72,7 @@ class AudioList extends React.Component {
             }
             disableTypography={true}
             title={
-              <Typography variant="h5" component="h2" noWrap>
+              <Typography variant="h6" component="h2" noWrap className={classes.title} >
                 {venue.name}
               </Typography>
             }
@@ -76,23 +82,20 @@ class AudioList extends React.Component {
               </Typography>}
           />
 
+          <CardContent className={classes.cardContent}>
+            <audio controls src={audio.url}></audio>
+          </CardContent>
+
           <CardActions>
-            <IconButton aria-label="play">
-              <PlayArrow />
-              <Box component="span" fontSize="body1.fontSize">
-                {audio.playCount}
-              </Box>
-            </IconButton>
+            <Box component="span" flexGrow={1} ml={1} color="textSecondary" fontSize="caption.fontSize">
+              Played {audio.playCountLastDay || 0} times yesterday, {audio.playCount || 0} times since {audio.createDate}
+            </Box>
 
             <IconButton
               onClick={() => this.handleDelete(index)}
               aria-label="delete">
               <Delete />
             </IconButton>
-
-            <Typography variant="caption" color="textSecondary" noWrap>
-              {audio.createDate}
-            </Typography>
           </CardActions>
         </Card>
       </Grid>
