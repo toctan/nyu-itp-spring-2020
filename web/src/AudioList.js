@@ -9,7 +9,6 @@ import {UserContext} from './User';
 import foursquare from './APIClient';
 
 const styles = theme => ({
-  offset: theme.mixins.toolbar,
   avatar: {
     backgroundColor: "#f94878",
   },
@@ -109,7 +108,6 @@ class AudioList extends React.Component {
 
     return (
       <main>
-        <div className={classes.offset} />
         <Box p={8} mb={4} bgcolor="background.paper">
           <Container component="main" maxWidth="sm">
             <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
