@@ -59,25 +59,35 @@ class AudioList extends React.Component {
   renderAudio = (audio, index) => {
     const { classes } = this.props;
     const venue = audio.venues[0];
-    const category = venue.categories[0].icon;
+    let title = 'Jingle',  categoryIcon;
+    if (audio.isName) title = 'Name';
+    if (venue) {
+      title = venue.name;
+      const category = venue.categories && venue.categories[0];
+      if (category) {
+        const icon = category.icon;
+        categoryIcon = `${icon.prefix}100${icon.suffix}`;
+      }
+    }
+
     return (
       <Grid item key={audio.id} xs={12} sm={6} md={4}>
         <Card>
           <CardHeader
             avatar={
               <Avatar
-                src={`${category.prefix}100${category.suffix}`}
+                src={categoryIcon}
                 aria-label="recipe" className={classes.avatar} />
             }
             disableTypography={true}
             title={
               <Typography variant="h6" component="h2" noWrap className={classes.title} >
-                {venue.name}
+                {title}
               </Typography>
             }
             subheader={
               <Typography variant="subtitle1" color="textSecondary" noWrap>
-                {venue.location.formattedAddress[0]}
+                {venue && venue.location.formattedAddress[0]}
               </Typography>}
           />
 
