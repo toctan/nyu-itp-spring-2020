@@ -1,16 +1,28 @@
-import qs from 'qs';
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Avatar, Box, IconButton, Container, Grid, Typography} from '@material-ui/core';
-import { Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
-import {UserContext} from './User';
+import React from 'react';
+
+import PropTypes from 'prop-types';
+import qs from 'qs';
+
+import { UserContext } from './User';
+import CategoryIcon from './CategoryIcon';
 import foursquare from './APIClient';
 
 const styles = theme => ({
-  avatar: {
-    backgroundColor: "#f94878",
+  cardHeaderContent: {
+    minWidth: 0,
   },
   cardContent: {
     paddingTop: 0,
@@ -59,15 +71,11 @@ class AudioList extends React.Component {
   renderAudio = (audio, index) => {
     const { classes } = this.props;
     const venue = audio.venues[0];
-    let title = 'Jingle',  categoryIcon;
+    let title = 'Jingle',  category;
     if (audio.isName) title = 'Name';
     if (venue) {
       title = venue.name;
-      const category = venue.categories && venue.categories[0];
-      if (category) {
-        const icon = category.icon;
-        categoryIcon = `${icon.prefix}100${icon.suffix}`;
-      }
+      category = venue.categories && venue.categories[0];
     }
 
     return (
@@ -75,9 +83,7 @@ class AudioList extends React.Component {
         <Card>
           <CardHeader
             avatar={
-              <Avatar
-                src={categoryIcon}
-                aria-label="recipe" className={classes.avatar} />
+              <CategoryIcon category={category} />
             }
             disableTypography={true}
             title={
@@ -88,7 +94,11 @@ class AudioList extends React.Component {
             subheader={
               <Typography variant="subtitle1" color="textSecondary" noWrap>
                 {venue && venue.location.formattedAddress[0]}
-              </Typography>}
+              </Typography>
+            }
+            classes={{
+              content: classes.cardHeaderContent,
+            }}
           />
 
           <CardContent className={classes.cardContent}>
