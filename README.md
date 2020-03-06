@@ -1,20 +1,21 @@
-# Marsbot
+# Marsbot Audio
 
 ## Running Locally
-First sync heroku config vars to local `.env` file:
+Configure required environment variables with [`.env`](https://devcenter.heroku.com/articles/config-vars):
 ```
-heroku config -s > .env
+cp .env.template .env
+vim .env
 ```
 Install dependencies:
 ```
 pip install -r requirements.txt
-cd web && yarn install
+yarn run heroku-prebuild
 ```
 Then run:
 ```
 heroku local -f Procfile.development
 ```
-A browser tab should open automatically, happy coding!
+Wait, then a browser tab should open automatically, happy coding!
 
 ## Deploy!
 First add heroku remote to your local git repo:
