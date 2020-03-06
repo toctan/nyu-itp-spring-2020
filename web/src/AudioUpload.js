@@ -8,6 +8,21 @@ import FoursquareSuggest from './FoursquareSuggest';
 
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
+  const handleUpload = (files) => {
+    foursquare.post('demo/marsbot/audio/upload', {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      params: {
+        file: files,
+      }
+    }).then(function () {
+        console.log('SUCCESS!!');
+      })
+      .catch(function () {
+        console.log('FAILURE!!');
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -28,7 +43,7 @@ export default function AudioUpload() {
           acceptedFiles={['audio/*']}
           filesLimit={1}
         />
-        <Button variant="contained" color="primary">
+        <Button size='large' variant="contained" color="primary" onClick = {() => handleUpload(files)}>
           Submit
         </Button>
       </Box>
