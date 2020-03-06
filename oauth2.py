@@ -1,42 +1,25 @@
 import os
-from functools import wraps
 from datetime import timedelta
 
-from flask import session, redirect, url_for, request, g
+from flask import redirect, request
 from authlib.flask.client import OAuth
 from authlib.common.urls import add_params_to_uri
 from loginpass import create_flask_blueprint
-from loginpass._core import OAuthBackend, map_profile_fields
+from loginpass._core import OAuthBackend
 
-from user import User
-
-oauth_token_session_key = 'foursquare_oauth_token'
-user_id_session_key = 'current_user_id'
+oauth_token_cookie_key = 'foursquare_oauth_token'
 
 
 def fetch_token():
-    return session.get(oauth_token_session_key)
+    return request.cookies.get(oauth_token_cookie_key)
 
 
 def handle_authorize(remote, token, user):
-    user.save(token)
-    session[user_id_session_key] = user.sub
-    session[oauth_token_session_key] = token
-    next = request.args.get('next', '/')
-    response = redirect(next)
-    max_age = timedelta(days=31).total_seconds()
-    response.set_cookie(oauth_token_session_key, token['access_token'], max_age=max_age)
+    response = redirect(request.args.get('next', '/'))
+    response.set_cookie(
+        oauth_token_cookie_key, token['access_token'],
+        max_age=timedelta(days=31).total_seconds())
     return response
-
-
-def require_login(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        g.user = User.find(session.get(user_id_session_key))
-        if not g.user and not request.endpoint.startswith('loginpass'):
-            return redirect(url_for('loginpass_foursquare.login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 def add_token_to_uri(uri, access_token):
@@ -74,17 +57,8 @@ class Foursquare(OAuthBackend):
     }
 
     def profile(self, **kwargs):
-        resp = self.get('users/self', **kwargs)
-        resp.raise_for_status()
-        user = resp.json()['response']['user']
-        return User(map_profile_fields(user, {
-            'sub': 'id',
-            'given_name': 'firstName',
-            'family_name': 'lastName',
-            'profile': 'canonicalUrl',
-            'picture': 'photo',
-            'email': lambda u: u['contact']['email'],
-        }))
+        pass
+
 
 
 oauth = OAuth()

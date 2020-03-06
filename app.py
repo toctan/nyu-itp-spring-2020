@@ -1,7 +1,6 @@
 import os
 from flask import Flask
-from oauth2 import oauth, foursquare_bp, require_login
-from api_proxy import FoursquareAPIProxy
+from oauth2 import oauth, foursquare_bp
 
 app = Flask(
     __name__,
@@ -16,17 +15,11 @@ app.register_blueprint(foursquare_bp, url_prefix='/')
 oauth.init_app(app)
 
 
+# TODO: use WhiteNoise to serve static files
 @app.errorhandler(404)
 def home(e):
     return app.send_static_file('index.html')
 
-
-app.wsgi_app = FoursquareAPIProxy(app.wsgi_app, {
-    "/api/": {
-        "target": oauth.foursquare.api_base_url,
-        "remove_prefix": True,
-    }
-})
 
 if __name__ == '__main__':
     app.run()
