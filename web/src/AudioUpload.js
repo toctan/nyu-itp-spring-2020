@@ -6,24 +6,25 @@ import foursquare from './APIClient';
 
 import FoursquareSuggest from './FoursquareSuggest';
 
+
+const handleUpload = (files) => {
+  foursquare.post('demo/marsbot/audio/upload', {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    params: {
+      files: files,
+    }
+  }).then(response => {
+      console.log(response);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
-  const handleUpload = (files) => {
-    foursquare.post('demo/marsbot/audio/upload', {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      params: {
-        file: files,
-      }
-    }).then(function () {
-        console.log('SUCCESS!!');
-      })
-      .catch(function () {
-        console.log('FAILURE!!');
-      });
-  };
-
   return (
     <Container component="main" maxWidth="xs">
       <Box mt={8}>
