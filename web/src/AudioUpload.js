@@ -1,7 +1,8 @@
 import { Box, Container, Divider, Typography } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import React from 'react';
-import SubmitBottom from './Bottom'
+import Button from '@material-ui/core/Button';
+import foursquare from './APIClient';
 
 import FoursquareSuggest from './FoursquareSuggest';
 
@@ -27,7 +28,9 @@ export default function AudioUpload() {
           acceptedFiles={['audio/*']}
           filesLimit={1}
         />
-        <SubmitBottom />
+        <Button variant="contained" color="primary">
+          Submit
+        </Button>
       </Box>
     </Container>
   );
