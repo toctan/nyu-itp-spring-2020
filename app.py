@@ -1,5 +1,5 @@
 import os
-from flask import Flask, g
+from flask import Flask
 from oauth2 import oauth, foursquare_bp, require_login
 from api_proxy import FoursquareAPIProxy
 
@@ -16,8 +16,8 @@ app.register_blueprint(foursquare_bp, url_prefix='/')
 oauth.init_app(app)
 
 
-@app.route('/')
-def home():
+@app.errorhandler(404)
+def home(e):
     return app.send_static_file('index.html')
 
 

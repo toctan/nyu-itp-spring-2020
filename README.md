@@ -5,11 +5,16 @@ First sync heroku config vars to local `.env` file:
 ```
 heroku config -s > .env
 ```
+Install dependencies:
+```
+pip install -r requirements.txt
+cd web && yarn install
+```
 Then run:
 ```
-heroku local
+heroku local -f Procfile.development
 ```
-Then on your own machine, you can see by visiting: http://localhost:5000/
+A browser tab should open automatically, happy coding!
 
 ## Deploy!
 First add heroku remote to your local git repo:

@@ -60,7 +60,7 @@ class App extends React.Component {
                       fullWidth
                       variant="contained"
                       color="primary"
-                      href="/login"
+                      href={`${process.env.REACT_APP_BACKEND_URL || ''}/login`}
                     >
                       Sign In with Foursquare
                     </Button>

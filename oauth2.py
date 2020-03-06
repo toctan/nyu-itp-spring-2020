@@ -22,7 +22,7 @@ def handle_authorize(remote, token, user):
     user.save(token)
     session[user_id_session_key] = user.sub
     session[oauth_token_session_key] = token
-    next = request.form.get('next', url_for('home'))
+    next = request.args.get('next', '/')
     response = redirect(next)
     max_age = timedelta(days=31).total_seconds()
     response.set_cookie(oauth_token_session_key, token['access_token'], max_age=max_age)
