@@ -7,13 +7,13 @@ app = Flask(
     static_folder='web/build',
     static_url_path='/',
 )
+
 app.config['SECRET_KEY'] = os.environ['FLASK_SECRET_KEY']
 app.config['FOURSQUARE_CLIENT_ID'] = os.environ['FOURSQUARE_CLIENT_ID']
 app.config['FOURSQUARE_CLIENT_SECRET'] = os.environ['FOURSQUARE_CLIENT_SECRET']
 
 app.register_blueprint(oauth2_bp, url_prefix='/')
 oauth.init_app(app)
-
 
 # TODO: use WhiteNoise to serve static files
 @app.errorhandler(404)

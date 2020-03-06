@@ -8,14 +8,21 @@ import FoursquareSuggest from './FoursquareSuggest';
 
 
 const handleUpload = (files) => {
-  foursquare.post('demo/marsbot/audio/upload', {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+  const file = files[0]
+  const ext = "mp3"
+  const formData = new FormData();
+  formData.append("audio", file);
+  foursquare.post('demo/marsbot/audio/upload',
+    {
+      params: {
+        ext: "mp3",
+        file: formData
+      }
     },
-    params: {
-      files: files,
-    }
-  }).then(response => {
+    {
+      headers: {'Content-Type': 'multipart/form-data'}
+    })
+    .then(response => {
       console.log(response);
     })
     .catch(error => {
