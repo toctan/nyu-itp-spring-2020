@@ -1,2 +1,2 @@
-flask: flask run
+flask: ([ -f web/build/index.html ] || yarn run build) && flask run
 react: cd web && yarn start
