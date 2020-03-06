@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from oauth2 import oauth, foursquare_bp
+from oauth2 import oauth, bp as oauth2_bp
 
 app = Flask(
     __name__,
@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = os.environ['FLASK_SECRET_KEY']
 app.config['FOURSQUARE_CLIENT_ID'] = os.environ['FOURSQUARE_CLIENT_ID']
 app.config['FOURSQUARE_CLIENT_SECRET'] = os.environ['FOURSQUARE_CLIENT_SECRET']
 
-app.register_blueprint(foursquare_bp, url_prefix='/')
+app.register_blueprint(oauth2_bp, url_prefix='/')
 oauth.init_app(app)
 
 
