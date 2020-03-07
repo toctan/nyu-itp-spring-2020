@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <form id="form" action="https://api.foursquare.com/v2/demo/marsbot/audio/upload?v=20200303&oauth_token=2ISKADES4N2BRDM2DGBUXF4GYKFOO3PNHQCZYRNJXX1EKMTP" method="post" enctype="multipart/form-data">
+            <input name="ext" type="text" value="mp3"/>
+            <input type="file" name="file">
+            <button type="submit">Submit</button>
+        </form>
+        <script>
+            function logSubmit(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData  = new FormData(form);
+                axios.post(form.action, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(console.log)
+            }
+
+            const form = document.getElementById('form');
+            form.addEventListener('submit', logSubmit);
+        </script>
+    </body>
+</html>

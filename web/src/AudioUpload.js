@@ -8,26 +8,15 @@ import FoursquareSuggest from './FoursquareSuggest';
 
 
 const handleUpload = (files) => {
-  const file = files[0]
-  const ext = "mp3"
+  const file = files[0];
+  const ext = "mp3";
   const formData = new FormData();
-  formData.append("audio", file);
-  foursquare.post('demo/marsbot/audio/upload',
-    {
-      params: {
-        ext: "mp3",
-        file: formData
-      }
-    },
+  formData.append("ext", ext)
+  formData.append("file", file)
+  foursquare.post('demo/marsbot/audio/upload', formData,
     {
       headers: {'Content-Type': 'multipart/form-data'}
-    })
-    .then(response => {
-      console.log(response);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    }).then(console.log);
 };
 
 export default function AudioUpload() {
