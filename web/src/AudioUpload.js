@@ -1,13 +1,26 @@
 import { Box, Container, Divider, Typography } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import React from 'react';
+import Button from '@material-ui/core/Button';
+import foursquare from './APIClient';
 
 import FoursquareSuggest from './FoursquareSuggest';
 
 
+const handleUpload = (files) => {
+  const file = files[0];
+  const ext = "mp3";
+  const formData = new FormData();
+  formData.append("ext", ext)
+  formData.append("file", file)
+  foursquare.post('demo/marsbot/audio/upload', formData,
+    {
+      headers: {'Content-Type': 'multipart/form-data'}
+    }).then(console.log);
+};
+
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
-
   return (
     <Container component="main" maxWidth="xs">
       <Box mt={8}>
@@ -27,7 +40,9 @@ export default function AudioUpload() {
           acceptedFiles={['audio/*']}
           filesLimit={1}
         />
-
+        <Button size='large' variant="contained" color="primary" onClick = {() => handleUpload(files)}>
+          Submit
+        </Button>
       </Box>
     </Container>
   );
