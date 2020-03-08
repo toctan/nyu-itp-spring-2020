@@ -1,153 +1,189 @@
 import {
   Box,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Container,
+  Divider,
   Grid,
   IconButton,
-  Typography,
-} from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
-import { withStyles } from "@material-ui/core/styles";
-import React from 'react';
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  Paper,
+  makeStyles
+} from "@material-ui/core";
+import {
+  PlayCircleOutline,
+  PauseCircleOutline,
+  DeleteOutline,
+  Schedule
+} from "@material-ui/icons";
+import React from "react";
+import Moment from "react-moment";
+import qs from "qs";
 
-import PropTypes from 'prop-types';
-import qs from 'qs';
+import { UserContext } from "./User";
+import CategoryIcon from "./CategoryIcon";
+import foursquare from "./APIClient";
 
-import { UserContext } from './User';
-import CategoryIcon from './CategoryIcon';
-import foursquare from './APIClient';
-
-const styles = theme => ({
-  cardHeaderContent: {
-    minWidth: 0,
-  },
-  cardContent: {
-    paddingTop: 0,
-    paddingBottom: 0,
-    '& > audio': {
-      maxWidth: "100%"
+const useStyles = makeStyles(theme => ({
+  gridItem: {
+    [theme.breakpoints.up("sm")]: {
+      height: `calc(100vh - ${theme.spacing(8)}px)`,
+      overflowY: "auto"
     }
   },
-});
-
-
-class AudioList extends React.Component {
-  static contextType = UserContext;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      audios: [],
-    };
+  listActionIcon: {
+    marginRight: theme.spacing(1)
   }
+}));
 
-  componentDidMount() {
-    const user = this.context;
+export default function AudioList(props) {
+  const classes = useStyles();
+  const user = React.useContext(UserContext);
+  const [audios, setAudios] = React.useState([]);
+  const [playing, setPlaying] = React.useState(null);
+
+  React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get('user_id') || user.id;
-    foursquare.get('demo/marsbot/audio/snippetuser', {
-      params: {
-        userId: userId,
-      }
-    }).then(resp => this.setState({
-      audios: resp.data.response.audio
-    }));
-  }
+    const userId = params.get("user_id") || user.id;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    foursquare
+      .get("demo/marsbot/audio/snippetuser", {
+        params: {
+          userId: userId,
+          tz: tz
+        }
+      })
+      .then(resp => setAudios(resp.data.response.audio));
+  }, [user]);
 
-  handleDelete(index) {
-    const audio = this.state.audios[index];
-    const audios = this.state.audios.slice();
-    audios.splice(index, 1);
-
-    foursquare.post('demo/marsbot/audio/delete', qs.stringify({
-      audioFileId: audio.id,
-    })).then(resp => this.setState({audios: audios}))
+  const handleDelete = index => {
+    const audio_id = audios[index].id;
+    const nAudios = audios.slice(0, index).concat(audios.slice(index + 1));
+    foursquare
+      .post(
+        "demo/marsbot/audio/delete",
+        qs.stringify({
+          audioFileId: audio_id
+        })
+      )
+      .then(resp => setAudios(nAudios))
       .catch(error => console.log(error));
-  }
+  };
 
-  renderAudio = (audio, index) => {
-    const { classes } = this.props;
+  const handlePlay = src => {
+    if (playing) {
+      playing.pause();
+      if (playing.src === src) return setPlaying(null);
+    }
+    const audio = new Audio(src);
+    audio.onended = () => setPlaying(null);
+    setPlaying(audio);
+    return audio.play();
+  };
+
+  const ListActionItem = props => {
+    return (
+      <IconButton
+        size="small"
+        className={classes.listActionIcon}
+        {...props.rootProps}
+      >
+        <props.icon fontSize="small" />
+        <Box component="span" fontSize="body2.fontSize" ml={0.5}>
+          {props.text}
+        </Box>
+      </IconButton>
+    );
+  };
+
+  const renderAudio = (audio, index) => {
     const venue = audio.venues[0];
-    let title = 'Jingle',  category;
-    if (audio.isName) title = 'Name';
+    let title = "Unknown Audio",
+      subTitle,
+      category;
+    if (audio.isName) title = "Your Name";
+    if (audio.isJingle) title = "Your Jingle";
     if (venue) {
       title = venue.name;
+      subTitle = venue.location.formattedAddress.join(" ");
       category = venue.categories && venue.categories[0];
     }
 
     return (
-      <Grid item key={audio.id} xs={12} sm={6} md={4}>
-        <Card>
-          <CardHeader
-            avatar={
-              <CategoryIcon category={category} />
-            }
-            disableTypography={true}
-            title={
-              <Typography variant="h6" component="h2" noWrap className={classes.title} >
-                {title}
-              </Typography>
-            }
-            subheader={
-              <Typography variant="subtitle1" color="textSecondary" noWrap>
-                {venue && venue.location.formattedAddress[0]}
-              </Typography>
-            }
-            classes={{
-              content: classes.cardHeaderContent,
-            }}
-          />
-
-          <CardContent className={classes.cardContent}>
-            <audio controls src={audio.url}></audio>
-          </CardContent>
-
-          <CardActions>
-            <Box component="span" flexGrow={1} ml={1} color="textSecondary" fontSize="caption.fontSize">
-              Played {audio.playCountLastDay || 0} times yesterday, {audio.playCount || 0} times since {audio.createDate}
-            </Box>
-
+      <React.Fragment key={audio.id}>
+        <Divider />
+        <ListItem>
+          <ListItemAvatar>
+            <CategoryIcon category={category} />
+          </ListItemAvatar>
+          <div>
+            <ListItemText primary={title} secondary={subTitle} />
+            <div>
+              <ListActionItem
+                icon={Schedule}
+                text={
+                  <Moment
+                    parse="LLL"
+                    format="L"
+                    fromNowDuring={1000 * 60 * 60 * 24 * 7}
+                    withTitle
+                  >
+                    {audio.createDate}
+                  </Moment>
+                }
+              />
+              <ListActionItem
+                icon={PlayCircleOutline}
+                text={audio.playCount || 0}
+              />
+              <ListActionItem
+                icon={DeleteOutline}
+                text="Delete"
+                rootProps={{ onClick: () => handleDelete(index) }}
+              />
+            </div>
+          </div>
+          <ListItemSecondaryAction>
             <IconButton
-              onClick={() => this.handleDelete(index)}
-              aria-label="delete">
-              <Delete />
+              onClick={() => handlePlay(audio.url)}
+              edge="end"
+              aria-label="play"
+            >
+              {playing && playing.src === audio.url ? (
+                <PauseCircleOutline fontSize="large" />
+              ) : (
+                <PlayCircleOutline fontSize="large" />
+              )}
             </IconButton>
-          </CardActions>
-        </Card>
-      </Grid>
-    );
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { audios } = this.state;
-    const user = this.context;
-
-    return (
-      <main>
-        <Box p={8} mb={4} bgcolor="background.paper">
-          <Container component="main" maxWidth="sm">
-            <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
-              {`${user.name.split(" ")[0]}'s Marsbot Audios`}
-            </Typography>
-          </Container>
-        </Box>
-        <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {audios.map(this.renderAudio)}
-          </Grid>
-        </Container>
-      </main>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </React.Fragment>
     );
   };
+
+  return (
+    <Grid container>
+      <Grid item className={classes.gridItem} xs={12} sm={5} md={4}>
+        <Paper>
+          <List>
+            <ListItem>
+              <ListItemText
+                primary="Jin's Marsbot Audios"
+                primaryTypographyProps={{
+                  component: "h1",
+                  variant: "h6",
+                  align: "center"
+                }}
+              />
+            </ListItem>
+            {audios.map(renderAudio)}
+          </List>
+        </Paper>
+      </Grid>
+      <Grid item xs sm md className={classes.gridItem}>
+        {/* <AudioMap /> */}
+      </Grid>
+    </Grid>
+  );
 }
-
-AudioList.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles, { withTheme: true })(AudioList);
