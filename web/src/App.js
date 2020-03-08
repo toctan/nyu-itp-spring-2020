@@ -7,71 +7,53 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
-import {getUser, logOut, UserContext} from './User';
+import { getUser, UserContext } from './User';
 import Nav from './Nav';
 import AudioList from './AudioList';
 import AudioUpload from './AudioUpload';
 
 
-class App extends React.Component {
+export default function App() {
+  const [user, setUser] = React.useState(null);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null,
-    };
-  }
+  React.useEffect(() => {
+    getUser().then(setUser);
+  }, []);
 
-  componentDidMount() {
-    getUser().then(user => this.setState({user: user}));
-  }
+  return (
+    <Router>
+      <CssBaseline />
 
-  handleLogOut = () => {
-    logOut();
-    this.setState({user: null});
-  }
-
-  render() {
-    const { user } = this.state;
-    return (
-      <Router>
-        <React.Fragment>
-          <CssBaseline />
-
-          <UserContext.Provider value={user}>
-            <Nav handleLogOut={this.handleLogOut} />
-            {
-              user ?
-                <Switch>
-                  <Route path="/upload">
-                    <AudioUpload />
-                  </Route>
-                  <Route path="/">
-                    <AudioList />
-                  </Route>
-                </Switch> :
-                <Container component="main" maxWidth="xs">
-                  <Box display="flex"
-                       flexDirection="column"
-                       justifyContent="center"
-                       height="100vh">
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      href={`${process.env.REACT_APP_BACKEND_URL || ''}/login`}
-                    >
-                      Sign In with Foursquare
-                    </Button>
-                  </Box>
-                </Container>
-            }
-          </UserContext.Provider>
-        </React.Fragment>
-      </Router>
-    );
-  }
+      <UserContext.Provider value={user}>
+        <Nav setUser={setUser} />
+        {
+          user ?
+            <Switch>
+              <Route path="/upload">
+                <AudioUpload />
+              </Route>
+              <Route path="/">
+                <AudioList />
+              </Route>
+            </Switch> :
+            <Container component="main" maxWidth="xs">
+              <Box display="flex"
+                   flexDirection="column"
+                   justifyContent="center"
+                   height="100vh">
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  href={`${process.env.REACT_APP_BACKEND_URL || ''}/login`}
+                >
+                  Sign In with Foursquare
+                </Button>
+              </Box>
+            </Container>
+        }
+      </UserContext.Provider>
+    </Router>
+  );
 }
-
-export default App;

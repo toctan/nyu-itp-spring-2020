@@ -1,58 +1,46 @@
-import React from 'react';
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  AppBar,
+  Avatar,
+  Box,
+  IconButton,
+  Link,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography
+} from '@material-ui/core';
+import {
+  Link as RouterLink,
+  useHistory
+} from "react-router-dom";
 import MenuIcon from '@material-ui/icons/Menu';
-import {UserContext} from './User';
+import React from 'react';
+
+import { UserContext, logOut } from './User';
 
 
-const styles = theme => ({
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-});
+export default function Nav(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const user = React.useContext(UserContext);
+  const history = useHistory();
 
-class Nav extends React.Component {
-  static contextType = UserContext;
+  const handleLogOut = () => {
+    logOut();
+    history.push('/');
+    props.setUser(null);
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: null,
-    };
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { anchorEl } = this.state;
-    const user = this.context;
-
-    const handleMenu = event => {
-      this.setState({anchorEl: event.currentTarget});
-    };
-
-    const handleClose = () => {
-      this.setState({anchorEl: null});
-    };
-
-    return (
+  return (
       <>
         <AppBar>
           <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <IconButton edge="start" color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
 
-            <Box flexGrow={1}>
-              <Typography variant="h6" className={classes.title} color="inherit" noWrap>
-                Marsbot Audio
+            <Box flexGrow={1} ml={2}>
+              <Typography variant="h6" color="inherit" noWrap>
+                <Link component={RouterLink} to="/" underline="none" color="inherit">Marsbot Audio</Link>
               </Typography>
             </Box>
 
@@ -64,7 +52,7 @@ class Nav extends React.Component {
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={handleMenu}
+                  onClick={e => setAnchorEl(e.currentTarget)}
                 />
                 <Menu
                   id="menu-appbar"
@@ -79,11 +67,11 @@ class Nav extends React.Component {
                     horizontal: 'right',
                   }}
                   open={Boolean(anchorEl)}
-                  onClose={handleClose}
+                  onClose={() => setAnchorEl(null)}
                 >
-                  <MenuItem component={Link} href={user.profile} color='inherit'>Profile</MenuItem>
-                  <MenuItem component={Link} href={'https://foursquare.com/settings'} color='inherit'>Settings</MenuItem>
-                  <MenuItem onClick={this.props.handleLogOut}>Log Out</MenuItem>
+                  <MenuItem component={Link} href={user.profile} color="inherit">Profile</MenuItem>
+                  <MenuItem component={Link} href="https://foursquare.com/settings" color="inherit">Settings</MenuItem>
+                  <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
                 </Menu>
               </div>
             )}
@@ -93,7 +81,4 @@ class Nav extends React.Component {
         <Toolbar />
       </>
     );
-  }
 }
-
-export default withStyles(styles, { withTheme: true })(Nav);
