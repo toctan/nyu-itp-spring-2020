@@ -1,28 +1,18 @@
 import {
-  Box,
-  Divider,
   Grid,
-  IconButton,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   ListItemText,
   Paper,
   makeStyles
 } from "@material-ui/core";
-import {
-  PlayCircleOutline,
-  PauseCircleOutline,
-  DeleteOutline,
-  Schedule
-} from "@material-ui/icons";
 import React from "react";
-import Moment from "react-moment";
+
 import qs from "qs";
 
 import { UserContext } from "./User";
-import CategoryIcon from "./CategoryIcon";
+import AudioMap from "./AudioMap";
+import AudioItem from "./AudioItem";
 import foursquare from "./APIClient";
 
 const useStyles = makeStyles(theme => ({
@@ -31,9 +21,6 @@ const useStyles = makeStyles(theme => ({
       height: `calc(100vh - ${theme.spacing(8)}px)`,
       overflowY: "auto"
     }
-  },
-  listActionIcon: {
-    marginRight: theme.spacing(1)
   }
 }));
 
@@ -42,6 +29,7 @@ export default function AudioList(props) {
   const user = React.useContext(UserContext);
   const [audios, setAudios] = React.useState([]);
   const [playing, setPlaying] = React.useState(null);
+  const [hovering, setHovering] = React.useState(null);
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -58,6 +46,7 @@ export default function AudioList(props) {
   }, [user]);
 
   const handleDelete = index => {
+    if (!window.confirm("Are you sure you want to delete this audio?")) return;
     const audio_id = audios[index].id;
     const nAudios = audios.slice(0, index).concat(audios.slice(index + 1));
     foursquare
@@ -82,94 +71,25 @@ export default function AudioList(props) {
     return audio.play();
   };
 
-  const ListActionItem = props => {
-    return (
-      <IconButton
-        size="small"
-        className={classes.listActionIcon}
-        {...props.rootProps}
-      >
-        <props.icon fontSize="small" />
-        <Box component="span" fontSize="body2.fontSize" ml={0.5}>
-          {props.text}
-        </Box>
-      </IconButton>
-    );
-  };
-
-  const renderAudio = (audio, index) => {
-    const venue = audio.venues[0];
-    let title = "Unknown Audio",
-      subTitle,
-      category;
-    if (audio.isName) title = "Your Name";
-    if (audio.isJingle) title = "Your Jingle";
-    if (venue) {
-      title = venue.name;
-      subTitle = venue.location.formattedAddress.join(" ");
-      category = venue.categories && venue.categories[0];
-    }
-
-    return (
-      <React.Fragment key={audio.id}>
-        <Divider />
-        <ListItem>
-          <ListItemAvatar>
-            <CategoryIcon category={category} />
-          </ListItemAvatar>
-          <div>
-            <ListItemText primary={title} secondary={subTitle} />
-            <div>
-              <ListActionItem
-                icon={Schedule}
-                text={
-                  <Moment
-                    parse="LLL"
-                    format="L"
-                    fromNowDuring={1000 * 60 * 60 * 24 * 7}
-                    withTitle
-                  >
-                    {audio.createDate}
-                  </Moment>
-                }
-              />
-              <ListActionItem
-                icon={PlayCircleOutline}
-                text={audio.playCount || 0}
-              />
-              <ListActionItem
-                icon={DeleteOutline}
-                text="Delete"
-                rootProps={{ onClick: () => handleDelete(index) }}
-              />
-            </div>
-          </div>
-          <ListItemSecondaryAction>
-            <IconButton
-              onClick={() => handlePlay(audio.url)}
-              edge="end"
-              aria-label="play"
-            >
-              {playing && playing.src === audio.url ? (
-                <PauseCircleOutline fontSize="large" />
-              ) : (
-                <PlayCircleOutline fontSize="large" />
-              )}
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-      </React.Fragment>
-    );
-  };
+  const audioItems = audios.map((audio, index) => (
+    <AudioItem
+      key={audio.id}
+      audio={audio}
+      playing={playing}
+      handleDelete={() => handleDelete(index)}
+      handlePlay={handlePlay}
+      setHovering={setHovering}
+    />
+  ));
 
   return (
     <Grid container>
       <Grid item className={classes.gridItem} xs={12} sm={5} md={4}>
         <Paper>
           <List>
-            <ListItem>
+            <ListItem key="title">
               <ListItemText
-                primary="Jin's Marsbot Audios"
+                primary={`${user.name.split(" ")[0]}'s Marsbot Audios`}
                 primaryTypographyProps={{
                   component: "h1",
                   variant: "h6",
@@ -177,12 +97,17 @@ export default function AudioList(props) {
                 }}
               />
             </ListItem>
-            {audios.map(renderAudio)}
+            {audioItems}
           </List>
         </Paper>
       </Grid>
       <Grid item xs sm md className={classes.gridItem}>
-        {/* <AudioMap /> */}
+        <AudioMap
+          hovering={hovering}
+          setHovering={setHovering}
+          audios={audios.filter(a => a.venues.length)}
+          items={audioItems.filter((a, i) => audios[i].venues.length)}
+        />
       </Grid>
     </Grid>
   );
