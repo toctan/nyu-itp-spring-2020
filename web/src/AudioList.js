@@ -29,11 +29,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function AudioList(props) {
   const classes = useStyles();
+  const scrollRef = React.useRef(null);
   const user = React.useContext(UserContext);
   const [audios, setAudios] = React.useState([]);
   const [playing, setPlaying] = React.useState(null);
   const [hovering, setHovering] = React.useState(null);
-  const [filter, setFilter] = React.useState(false);
+  const [scrollTo, setScrollTo] = React.useState(null);
+  const [filterOn, setFilter] = React.useState(false);
 
   React.useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -46,6 +48,15 @@ export default function AudioList(props) {
       })
       .then(resp => setAudios(resp.data.response.audio));
   }, [user]);
+
+  React.useEffect(() => {
+    const element = scrollRef && scrollRef.current;
+    element &&
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+  }, [scrollTo]);
 
   const handleDelete = index => {
     if (!window.confirm("Are you sure you want to delete this audio?")) return;
@@ -74,24 +85,27 @@ export default function AudioList(props) {
   };
 
   const audioItems = audios
-    .filter(a => !filter || a.venues[0])
+    .filter(a => !filterOn || a.venues[0])
     .map((audio, index) => (
-      <AudioItem
-        key={audio.id}
-        audio={audio}
-        playing={playing}
-        handleDelete={() => handleDelete(index)}
-        handlePlay={handlePlay}
-        setHovering={setHovering}
-      />
+      <div key={audio.id} ref={scrollTo === audio.id ? scrollRef : null}>
+        <AudioItem
+          key={audio.id}
+          audio={audio}
+          playing={playing}
+          handleDelete={() => handleDelete(index)}
+          handlePlay={handlePlay}
+          hovering={hovering}
+          setHovering={setHovering}
+        />
+      </div>
     ));
 
   return (
     <Grid container>
       <Grid item className={classes.gridItem} xs={12} sm={5} md={4}>
         <Paper>
-          <List>
-            <ListItem key="title">
+          <List disablePadding>
+            <ListItem divider key="title">
               <ListItemText
                 primary={`${user.firstName}'s Marsbot Audios`}
                 primaryTypographyProps={{
@@ -103,7 +117,7 @@ export default function AudioList(props) {
               <ListItemSecondaryAction>
                 <Tooltip title="Toggle venue audios only" aria-label="filter">
                   <Switch
-                    checked={filter}
+                    checked={filterOn}
                     onChange={e => {
                       setFilter(e.target.checked);
                     }}
@@ -120,9 +134,12 @@ export default function AudioList(props) {
       <Grid item xs sm md className={classes.gridItem}>
         <AudioMap
           hovering={hovering}
-          setHovering={setHovering}
+          setHovering={a => {
+            setHovering(a);
+            setScrollTo(a);
+          }}
           audios={audios.filter(a => a.venues[0])}
-          items={audioItems.filter((a, i) => audios[i].venues[0])}
+          items={audioItems.filter((a, i) => filterOn || audios[i].venues[0])}
         />
       </Grid>
     </Grid>

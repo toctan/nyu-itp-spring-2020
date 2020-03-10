@@ -30,7 +30,7 @@ function Marker(props) {
   React.useEffect(() => {
     if (isActive) popupState.open(anchorRef.current);
     else popupState.close();
-  });
+  }, [isActive, popupState]);
 
   return (
     <>

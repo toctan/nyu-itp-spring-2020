@@ -1,6 +1,5 @@
 import {
   Box,
-  Divider,
   IconButton,
   Link,
   ListItem,
@@ -8,7 +7,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   makeStyles
-} from "@material-ui/core";
+} from '@material-ui/core';
 import {
   DeleteOutline,
   PauseCircleOutline,
@@ -23,12 +22,22 @@ import CategoryIcon from "./CategoryIcon";
 const useStyles = makeStyles(theme => ({
   listActionIcon: {
     marginRight: theme.spacing(1)
+  },
+  activeListItem: {
+    backgroundColor: theme.palette.action.hover
   }
 }));
 
 export default function AudioItem(props) {
   const classes = useStyles();
-  const { audio, playing, handlePlay, handleDelete, setHovering } = props;
+  const {
+    audio,
+    playing,
+    handlePlay,
+    handleDelete,
+    hovering,
+    setHovering
+  } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
     subTitle,
@@ -68,9 +77,9 @@ export default function AudioItem(props) {
     <div
       onMouseEnter={() => setHovering(audio.id)}
       onMouseLeave={() => setHovering(null)}
+      className={hovering === audio.id ? classes.activeListItem : ""}
     >
-      <Divider />
-      <ListItem>
+      <ListItem divider>
         <ListItemAvatar>
           <CategoryIcon category={category} />
         </ListItemAvatar>
