@@ -7,78 +7,94 @@ import {
   Menu,
   MenuItem,
   Toolbar,
+  Tooltip,
   Typography
-} from '@material-ui/core';
+} from "@material-ui/core";
+import { PlaylistAdd } from "@material-ui/icons";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import MenuIcon from "@material-ui/icons/Menu";
 import {
-  Link as RouterLink,
-  useHistory
-} from "react-router-dom";
-import MenuIcon from '@material-ui/icons/Menu';
-import React from 'react';
+  usePopupState,
+  bindMenu,
+  bindTrigger
+} from "material-ui-popup-state/hooks";
+import React from "react";
 
-import { UserContext, logOut } from './User';
-
+import { UserContext, logOut } from "./User";
 
 export default function Nav(props) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const popupState = usePopupState({ variant: "popper", popupId: "demoMenu" });
   const user = React.useContext(UserContext);
   const history = useHistory();
 
   const handleLogOut = () => {
     logOut();
-    history.push('/');
+    history.push("/");
     props.setUser(null);
   };
 
   return (
-      <>
-        <AppBar>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
+    <>
+      <AppBar>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
 
-            <Box flexGrow={1} ml={2}>
-              <Typography variant="h6" color="inherit" noWrap>
-                <Link component={RouterLink} to="/" underline="none" color="inherit">Marsbot Audio</Link>
-              </Typography>
-            </Box>
+          <Box flexGrow={1} ml={2}>
+            <Typography variant="h6" color="inherit" noWrap>
+              <Link
+                component={RouterLink}
+                to="/"
+                underline="none"
+                color="inherit"
+              >
+                Marsbot Audio
+              </Link>
+            </Typography>
+          </Box>
 
-            {user && (
-              <div>
-                <Avatar
-                  alt={user.name}
-                  src={user.picture}
+          {user && (
+            <>
+              <Link component={RouterLink} to="/upload" color="inherit">
+                <Tooltip title="Upload a new marsbotaudio" aria-label="upload">
+                  <IconButton color="inherit">
+                    <PlaylistAdd fontSize="large" />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+              <Box ml={1}>
+                <IconButton
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={e => setAnchorEl(e.currentTarget)}
-                />
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={() => setAnchorEl(null)}
+                  {...bindTrigger(popupState)}
                 >
-                  <MenuItem component={Link} href={user.profile} color="inherit">Profile</MenuItem>
-                  <MenuItem component={Link} href="https://foursquare.com/settings" color="inherit">Settings</MenuItem>
+                  <Avatar alt={user.name} src={user.picture} />
+                </IconButton>
+                <Menu id="menu-appbar" {...bindMenu(popupState)}>
+                  <MenuItem
+                    component={Link}
+                    href={user.profile}
+                    color="inherit"
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    href="https://foursquare.com/settings"
+                    color="inherit"
+                  >
+                    Settings
+                  </MenuItem>
                   <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
                 </Menu>
-              </div>
-            )}
-
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-      </>
-    );
+              </Box>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+    </>
+  );
 }
