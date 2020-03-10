@@ -2,8 +2,11 @@ import {
   Grid,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Paper,
+  Switch,
+  Tooltip,
   makeStyles
 } from "@material-ui/core";
 import React from "react";
@@ -11,8 +14,8 @@ import React from "react";
 import qs from "qs";
 
 import { UserContext } from "./User";
-import AudioMap from "./AudioMap";
 import AudioItem from "./AudioItem";
+import AudioMap from "./AudioMap";
 import foursquare from "./APIClient";
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +33,7 @@ export default function AudioList(props) {
   const [audios, setAudios] = React.useState([]);
   const [playing, setPlaying] = React.useState(null);
   const [hovering, setHovering] = React.useState(null);
+  const [filter, setFilter] = React.useState(false);
 
   React.useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -69,16 +73,18 @@ export default function AudioList(props) {
     return audio.play();
   };
 
-  const audioItems = audios.map((audio, index) => (
-    <AudioItem
-      key={audio.id}
-      audio={audio}
-      playing={playing}
-      handleDelete={() => handleDelete(index)}
-      handlePlay={handlePlay}
-      setHovering={setHovering}
-    />
-  ));
+  const audioItems = audios
+    .filter(a => !filter || a.venues[0])
+    .map((audio, index) => (
+      <AudioItem
+        key={audio.id}
+        audio={audio}
+        playing={playing}
+        handleDelete={() => handleDelete(index)}
+        handlePlay={handlePlay}
+        setHovering={setHovering}
+      />
+    ));
 
   return (
     <Grid container>
@@ -94,6 +100,18 @@ export default function AudioList(props) {
                   align: "center"
                 }}
               />
+              <ListItemSecondaryAction>
+                <Tooltip title="Toggle venue audios only" aria-label="filter">
+                  <Switch
+                    checked={filter}
+                    onChange={e => {
+                      setFilter(e.target.checked);
+                    }}
+                    color="secondary"
+                    size="small"
+                  />
+                </Tooltip>
+              </ListItemSecondaryAction>
             </ListItem>
             {audioItems}
           </List>
@@ -103,8 +121,8 @@ export default function AudioList(props) {
         <AudioMap
           hovering={hovering}
           setHovering={setHovering}
-          audios={audios.filter(a => a.venues.length)}
-          items={audioItems.filter((a, i) => audios[i].venues.length)}
+          audios={audios.filter(a => a.venues[0])}
+          items={audioItems.filter((a, i) => audios[i].venues[0])}
         />
       </Grid>
     </Grid>

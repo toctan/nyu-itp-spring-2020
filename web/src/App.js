@@ -13,7 +13,7 @@ export default function App() {
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get("_user_id");
+    const userId = params.get("user_id");
     getUser(userId).then(setUser);
   }, []);
 
