@@ -35,7 +35,7 @@ const handleUpload = (files, value) => {
     });
 };
 
-export default function AudioUpload(props) {
+export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
   const [value, setValue] = React.useState([]);
   const history = useHistory();
