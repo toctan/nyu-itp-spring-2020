@@ -1,88 +1,108 @@
-import { Box, Container, Divider, Typography } from '@material-ui/core';
-import { DropzoneArea } from 'material-ui-dropzone';
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import foursquare from './APIClient';
-import FoursquareSuggest from './FoursquareSuggest';
+import { Box, Container, Typography, makeStyles } from "@material-ui/core";
+import { DropzoneArea } from "material-ui-dropzone";
 import { useHistory } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import React from "react";
 
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
+import FoursquareSuggest from "./FoursquareSuggest";
+import foursquare from "./APIClient";
 
 const useStyles = makeStyles(theme => ({
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+  dropzone: {
+    textAlign: "center",
+    "& p": {
+      color: theme.palette.text.secondary,
+      fontSize: "1rem",
+      marginTop: "15%"
+    },
+    "& .MuiChip-root": {
+      maxWidth: "50%",
+      marginTop: theme.spacing(2)
+    }
+  }
 }));
 
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
-  const [value, setValue] = React.useState([]);
-  const history = useHistory();
   const classes = useStyles();
+  const history = useHistory();
 
-  const handleUpload = (files, value) => {
-    const file = files[0];
-    const ext = file.name.split('.').pop();
-    const formData = new FormData();
-    formData.append("ext", ext)
-    formData.append("file", file)
-    if (value === "setJingle") {
-      formData.append("setJingle", 1)
+  const handleSubmit = event => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (!files.length) return alert("No audio file selected.");
+    const ext = files[0].name.split(".").pop();
+    formData.append("ext", ext);
+    formData.append("file", files[0]);
+
+    const action = formData.get("action");
+    if (action) {
+      formData.append(action, 1);
+      formData.delete("action");
+      formData.delete("venueId");
+    } else if (!formData.get("venueId")) {
+      return alert("Please select an action or a venue to attach.");
     }
-    else if (value === "setName") {
-      formData.append("setName", 1)
-    }
-    foursquare.post('demo/marsbot/audio/upload', formData,
-      {
-        headers: {'Content-Type': 'multipart/form-data'}
-      }).then(response => { 
-        history.push('/');
+
+    return foursquare
+      .post("demo/marsbot/audio/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
       })
-      .catch(error => {
-          console.log(error.response)
+      .then(response => {
+        history.push("/");
       });
-  };
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <Box mt={8}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend"> Primary action </FormLabel>
-          <RadioGroup name="customized-radios" value={value} onChange={handleChange} row>
-            <FormControlLabel value="setName" control={<Radio color="primary" />} label="Set name"/>
-            <FormControlLabel value="setJingle" control={<Radio color="primary" />} label="Set jingle"/>
+        <Typography component="h1" variant="h5">
+          Upload an audio
+        </Typography>
+
+        <form onSubmit={handleSubmit}>
+          <FoursquareSuggest />
+
+          <RadioGroup name="action" row>
+            <FormControlLabel
+              value="setName"
+              control={<Radio color="primary" />}
+              label="Set name"
+            />
+            <FormControlLabel
+              value="setJingle"
+              control={<Radio color="primary" />}
+              label="Set jingle"
+            />
           </RadioGroup>
-        </FormControl>
 
-        <Typography component="h1" variant= 'h5'>
-          Attach to a venue
-        </Typography>
-        <FoursquareSuggest />
-        <Divider variant="middle" />
-        <Typography component="h1" variant="h5" gutterBottom >
-          Upload
-        </Typography>
+          <FormControl fullWidth margin="normal">
+            <DropzoneArea
+              dropzoneText={"Drag 'n' drop, or click to select"}
+              onChange={setFiles}
+              acceptedFiles={["audio/*"]}
+              dropzoneClass={classes.dropzone}
+              useChipsForPreview
+              filesLimit={1}
+            />
+          </FormControl>
 
-        <DropzoneArea
-          dropzoneText={"Drag 'n' drop, or click to select"}
-          onChange={setFiles}
-          acceptedFiles={['audio/*']}
-          filesLimit={1}
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth className={classes.submit} onClick = {() => files[0] ? handleUpload(files, value) : alert("No uploaded files")}>
-          Submit
-        </Button>
+          <FormControl fullWidth margin="normal">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth={true}
+            >
+              Submit
+            </Button>
+          </FormControl>
+        </form>
       </Box>
     </Container>
   );
-};
+}
