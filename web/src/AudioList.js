@@ -32,13 +32,11 @@ export default function AudioList(props) {
   const [hovering, setHovering] = React.useState(null);
 
   React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get("user_id") || user.id;
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     foursquare
       .get("demo/marsbot/audio/snippetuser", {
         params: {
-          userId: userId,
+          userId: user.id,
           tz: tz
         }
       })
@@ -89,7 +87,7 @@ export default function AudioList(props) {
           <List>
             <ListItem key="title">
               <ListItemText
-                primary={`${user.name.split(" ")[0]}'s Marsbot Audios`}
+                primary={`${user.firstName}'s Marsbot Audios`}
                 primaryTypographyProps={{
                   component: "h1",
                   variant: "h6",
