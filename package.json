@@ -1,13 +1,46 @@
 {
-  "engines": {
-    "node": "13.x",
-    "yarn": "1.x"
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.9.5",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.45",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.19.2",
+    "google-map-react": "^1.1.6",
+    "js-cookie": "^2.2.1",
+    "material-ui-dropzone": "^2.4.8",
+    "material-ui-popup-state": "^1.5.3",
+    "moment": "^2.24.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-moment": "^0.9.7",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.0",
+    "throttle-debounce": "^2.1.0"
   },
   "scripts": {
-    "heroku-prebuild": "cd web && yarn install",
-    "build": "cd web && yarn run build"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "cacheDirectories": [
-    "web/node_modules"
-   ]
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
