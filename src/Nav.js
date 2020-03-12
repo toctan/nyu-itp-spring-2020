@@ -20,17 +20,17 @@ import {
 } from "material-ui-popup-state/hooks";
 import React from "react";
 
-import { UserContext, logOut } from "./User";
+import User from "./User";
 
 export default function Nav(props) {
   const popupState = usePopupState({ variant: "popper", popupId: "demoMenu" });
-  const user = React.useContext(UserContext);
+  const { user, setUser } = React.useContext(User.Context);
   const history = useHistory();
 
   const handleLogOut = () => {
-    logOut();
+    User.signOut();
+    setUser(null);
     history.push("/");
-    props.setUser(null);
   };
 
   return (

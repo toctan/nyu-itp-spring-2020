@@ -13,9 +13,9 @@ import React from "react";
 
 import qs from "qs";
 
-import { UserContext } from "./User";
 import AudioItem from "./AudioItem";
 import AudioMap from "./AudioMap";
+import User from "./User";
 import foursquare from "./APIClient";
 
 const useStyles = makeStyles(theme => ({
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 export default function AudioList(props) {
   const classes = useStyles();
   const scrollRef = React.useRef(null);
-  const user = React.useContext(UserContext);
+  const { user } = React.useContext(User.Context);
   const [audios, setAudios] = React.useState([]);
   const [playing, setPlaying] = React.useState(null);
   const [hovering, setHovering] = React.useState(null);
