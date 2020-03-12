@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "marsbot-audio",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,6 +22,10 @@
     "react-scripts": "3.4.0",
     "throttle-debounce": "^2.1.0"
   },
+  "engines": {
+    "node": "13.x",
+    "yarn": "1.x"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -42,5 +46,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://marsbot-audio.herokuapp.com/"
 }

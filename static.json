@@ -1,0 +1,13 @@
+{
+  "root": "build/",
+  "routes": {
+    "/**": "index.html"
+  },
+  "https_only": true,
+  "proxies": {
+    "/api/oauth2/": {
+      "origin": "${REACT_APP_FOURSQUARE_OAUTH2_URL}",
+      "query": "client_secret=${FOURSQUARE_CLIENT_SECRET}"
+    }
+  }
+}
