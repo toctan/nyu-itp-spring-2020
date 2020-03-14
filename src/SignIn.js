@@ -60,8 +60,8 @@ const useStyles = makeStyles(theme => ({
 function SignInCallback(props) {
   const classes = useStyles();
   const history = useHistory();
-  const { code, state } = props;
   const { setUser } = React.useContext(User.Context);
+  const { code, state } = props;
 
   React.useEffect(() => {
     if (state !== session.getItem(oauthStateKey)) {
@@ -75,7 +75,7 @@ function SignInCallback(props) {
         history.replace(from);
       })
       .catch(_ => history.push("/"));
-  });
+  }, [code, state, history, setUser]);
 
   return (
     <Backdrop open className={classes.backdrop}>

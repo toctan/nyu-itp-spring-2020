@@ -47,5 +47,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://marsbot-audio.herokuapp.com/"
+  "proxy": "https://marsbot-audio.herokuapp.com/"
 }

@@ -14,6 +14,7 @@ import React from "react";
 const useStyles = makeStyles(theme => ({
   markerIcon: {
     fontSize: theme.typography.h3.fontSize,
+    transform: "translate(-50%, -100%)",
     "&.active": {
       color: theme.palette.primary.main
     }
