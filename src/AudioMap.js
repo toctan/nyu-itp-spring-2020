@@ -1,8 +1,9 @@
 import {
+  Card,
+  CardMedia,
   Container,
   Grow,
   List,
-  Paper,
   Popper,
   makeStyles
 } from "@material-ui/core";
@@ -10,6 +11,8 @@ import { LocationOn } from "@material-ui/icons";
 import { usePopupState, bindPopper } from "material-ui-popup-state/hooks";
 import GoogleMapReact from "google-map-react";
 import React from "react";
+
+import AudioItem from "./AudioItem";
 
 const useStyles = makeStyles(theme => ({
   markerIcon: {
@@ -25,8 +28,16 @@ function Marker(props) {
   const classes = useStyles();
   const popupState = usePopupState({ variant: "popper" });
   const anchorRef = React.useRef(null);
-  const { audio, item, hovering, setHovering } = props;
+  const { audio, hovering, setHovering, audioItemProps } = props;
   const isActive = audio.id === hovering;
+
+  let photoSrc;
+  const venue = audio.venues[0];
+  // ["venues"][0]["photos"]["groups"][0]["items"][0]["prefix"]
+  if (venue.photos.count === 1) {
+    const pItem = venue.photos.groups[0].items[0];
+    photoSrc = `${pItem.prefix}${pItem.width}x${pItem.height}${pItem.suffix}`;
+  }
 
   React.useEffect(() => {
     if (isActive) popupState.open(anchorRef.current);
@@ -51,10 +62,28 @@ function Marker(props) {
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps} timeout={300}>
-            <Container maxWidth="xs">
-              <Paper>
-                <List disablePadding>{item}</List>
-              </Paper>
+            <Container
+              maxWidth="xs"
+              disableGutters
+              onMouseEnter={() => setHovering(audio.id)}
+              onMouseLeave={() => setHovering(null)}
+            >
+              <Card>
+                <CardMedia
+                  className={classes.cardMedia}
+                  height="160"
+                  component="img"
+                  image={photoSrc}
+                  title={venue.name}
+                />
+                <List disablePadding>
+                  <AudioItem
+                    audio={audio}
+                    divider={false}
+                    {...audioItemProps}
+                  />
+                </List>
+              </Card>
             </Container>
           </Grow>
         )}
@@ -64,7 +93,7 @@ function Marker(props) {
 }
 
 export default function AudioMap(props) {
-  const { audios, items, hovering, setHovering } = props;
+  const { audios, hovering, setHovering, audioItemProps } = props;
   // TODO: calculate center & zoom from audio venue locations
   const defaultProps = {
     center: { lat: 40.7484, lng: -73.9857 },
@@ -79,9 +108,9 @@ export default function AudioMap(props) {
         lat={location.lat}
         lng={location.lng}
         audio={audio}
-        item={items[index]}
         hovering={hovering}
         setHovering={setHovering}
+        audioItemProps={audioItemProps}
       />
     );
   };

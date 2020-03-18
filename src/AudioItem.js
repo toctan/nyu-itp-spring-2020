@@ -23,9 +23,6 @@ const useStyles = makeStyles(theme => ({
   listActionIcon: {
     marginRight: theme.spacing(1)
   },
-  activeListItem: {
-    backgroundColor: theme.palette.action.hover
-  }
 }));
 
 export default function AudioItem(props) {
@@ -35,13 +32,12 @@ export default function AudioItem(props) {
     playing,
     handlePlay,
     handleDelete,
-    hovering,
-    setHovering
+    divider = true
   } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
-    subTitle,
-    category;
+      subTitle,
+      category;
   if (audio.isName) title = "Your Name";
   if (audio.isJingle) title = "Your Jingle";
   if (venue) {
@@ -74,56 +70,50 @@ export default function AudioItem(props) {
   };
 
   return (
-    <div
-      onMouseEnter={() => setHovering(audio.id)}
-      onMouseLeave={() => setHovering(null)}
-      className={hovering === audio.id ? classes.activeListItem : ""}
-    >
-      <ListItem divider>
-        <ListItemAvatar>
-          <CategoryIcon category={category} />
-        </ListItemAvatar>
+    <ListItem divider={divider}>
+      <ListItemAvatar>
+        <CategoryIcon category={category} />
+      </ListItemAvatar>
+      <div>
+        <ListItemText primary={title} secondary={subTitle} />
         <div>
-          <ListItemText primary={title} secondary={subTitle} />
-          <div>
-            <ListActionItem
-              icon={Schedule}
-              text={
-                <Moment
-                  parse="LLL"
-                  format="L"
-                  fromNowDuring={1000 * 60 * 60 * 24 * 7}
-                  withTitle
-                >
-                  {audio.createDate}
-                </Moment>
-              }
-            />
-            <ListActionItem
-              icon={PlayCircleOutline}
-              text={audio.playCount || 0}
-            />
-            <ListActionItem
-              icon={DeleteOutline}
-              text="Delete"
-              rootProps={{ onClick: handleDelete }}
-            />
-          </div>
+          <ListActionItem
+            icon={Schedule}
+            text={
+              <Moment
+                parse="LLL"
+                format="L"
+                fromNowDuring={1000 * 60 * 60 * 24 * 7}
+                withTitle
+              >
+                {audio.createDate}
+              </Moment>
+            }
+          />
+          <ListActionItem
+            icon={PlayCircleOutline}
+            text={audio.playCount || 0}
+          />
+          <ListActionItem
+            icon={DeleteOutline}
+            text="Delete"
+            rootProps={{ onClick: () => handleDelete(audio.id) }}
+          />
         </div>
-        <ListItemSecondaryAction>
-          <IconButton
-            onClick={() => handlePlay(audio.url)}
-            edge="end"
-            aria-label="play"
-          >
-            {playing && playing.src === audio.url ? (
-              <PauseCircleOutline fontSize="large" />
-            ) : (
-              <PlayCircleOutline fontSize="large" />
-            )}
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    </div>
+      </div>
+      <ListItemSecondaryAction>
+        <IconButton
+          onClick={() => handlePlay(audio.url)}
+          edge="end"
+          aria-label="play"
+        >
+          {playing && playing.src === audio.url ? (
+            <PauseCircleOutline fontSize="large" />
+          ) : (
+            <PlayCircleOutline fontSize="large" />
+          )}
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
   );
 }

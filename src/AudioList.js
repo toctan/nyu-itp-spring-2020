@@ -24,6 +24,9 @@ const useStyles = makeStyles(theme => ({
       height: `calc(100vh - ${theme.spacing(8)}px)`,
       overflowY: "auto"
     }
+  },
+  activeListItem: {
+    backgroundColor: theme.palette.action.hover
   }
 }));
 
@@ -35,7 +38,10 @@ export default function AudioList(props) {
   const [playing, setPlaying] = React.useState(null);
   const [hovering, setHovering] = React.useState(null);
   const [scrollTo, setScrollTo] = React.useState(null);
-  const [filterOn, setFilter] = React.useState(false);
+
+  const params = new URLSearchParams(window.location.search);
+  const filter = params.get("filter");
+  const [filterOn, setFilter] = React.useState(filter === "on");
 
   React.useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -58,10 +64,8 @@ export default function AudioList(props) {
       });
   }, [scrollTo]);
 
-  const handleDelete = index => {
+  const handleDelete = audio_id => {
     if (!window.confirm("Are you sure you want to delete this audio?")) return;
-    const audio_id = audios[index].id;
-    const nAudios = audios.slice(0, index).concat(audios.slice(index + 1));
     foursquare
       .post(
         "demo/marsbot/audio/delete",
@@ -69,7 +73,7 @@ export default function AudioList(props) {
           audioFileId: audio_id
         })
       )
-      .then(resp => setAudios(nAudios))
+      .then(resp => setAudios(audios.filter(a => a.id !== audio_id)))
       .catch(error => console.log(error));
   };
 
@@ -84,19 +88,23 @@ export default function AudioList(props) {
     return audio.play();
   };
 
+  const audioItemProps = {
+    playing,
+    handlePlay,
+    handleDelete
+  };
+
   const audioItems = audios
     .filter(a => !filterOn || a.venues[0])
     .map((audio, index) => (
-      <div key={audio.id} ref={scrollTo === audio.id ? scrollRef : null}>
-        <AudioItem
-          key={audio.id}
-          audio={audio}
-          playing={playing}
-          handleDelete={() => handleDelete(index)}
-          handlePlay={handlePlay}
-          hovering={hovering}
-          setHovering={setHovering}
-        />
+      <div
+        key={audio.id}
+        ref={scrollTo === audio.id ? scrollRef : null}
+        onMouseEnter={() => setHovering(audio.id)}
+        onMouseLeave={() => setHovering(null)}
+        className={hovering === audio.id ? classes.activeListItem : ""}
+      >
+        <AudioItem audio={audio} {...audioItemProps} />
       </div>
     ));
 
@@ -133,13 +141,13 @@ export default function AudioList(props) {
       </Grid>
       <Grid item xs sm md className={classes.gridItem}>
         <AudioMap
+          audios={audios.filter(a => a.venues[0])}
           hovering={hovering}
           setHovering={a => {
             setHovering(a);
             setScrollTo(a);
           }}
-          audios={audios.filter(a => a.venues[0])}
-          items={audioItems.filter((a, i) => filterOn || audios[i].venues[0])}
+          audioItemProps={audioItemProps}
         />
       </Grid>
     </Grid>
