@@ -33,14 +33,19 @@ export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
   const classes = useStyles();
   const history = useHistory();
-
   const handleSubmit = event => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    if (!files.length) return alert("No audio file selected.");
-    const ext = files[0].name.split(".").pop();
-    formData.append("ext", ext);
-    formData.append("file", files[0]);
+    if (files instanceof Blob) {
+      formData.append("ext", "mp3");
+      formData.append("file", files);
+    }
+    else {
+      if (!files.length) return alert("No audio file selected.");
+      const ext = files[0].name.split(".").pop();
+      formData.append("ext", ext);
+      formData.append("file", files[0]);
+    }
 
     const action = formData.get("action");
     if (action) {

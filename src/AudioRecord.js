@@ -34,7 +34,7 @@ class AudioRecord extends React.Component {
       .then(([buffer, blob]) => {
         const blobURL = URL.createObjectURL(blob)
         this.setState({ blobURL, isRecording: false });
-        this.props.setFiles(blobURL)
+        this.props.setFiles(blob)
       }).catch((e) => console.log(e));
   };
 
