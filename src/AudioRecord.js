@@ -38,19 +38,6 @@ class AudioRecord extends React.Component {
       }).catch((e) => console.log(e));
   };
 
-  componentDidMount() {
-    navigator.getUserMedia({ audio: true },
-      () => {
-        console.log('Permission Granted');
-        this.setState({ isBlocked: false });
-      },
-      () => {
-        console.log('Permission Denied');
-        this.setState({ isBlocked: true })
-      },
-    );
-  }
-
   render(){
     return (
       <div className="App">
