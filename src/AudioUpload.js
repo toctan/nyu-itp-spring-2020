@@ -7,9 +7,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import React from "react";
+import Grid from '@material-ui/core/Grid';
 
 import FoursquareSuggest from "./FoursquareSuggest";
 import foursquare from "./APIClient";
+import AudioRecord from './AudioRecord'
+
 
 const useStyles = makeStyles(theme => ({
   dropzone: {
@@ -58,15 +61,13 @@ export default function AudioUpload() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <Box mt={8}>
         <Typography component="h1" variant="h5">
           Upload an audio
         </Typography>
-
         <form onSubmit={handleSubmit}>
           <FoursquareSuggest />
-
           <RadioGroup name="action" row>
             <FormControlLabel
               value="setName"
@@ -79,18 +80,25 @@ export default function AudioUpload() {
               label="Set jingle"
             />
           </RadioGroup>
-
-          <FormControl fullWidth margin="normal">
-            <DropzoneArea
-              dropzoneText={"Drag 'n' drop, or click to select"}
-              onChange={setFiles}
-              acceptedFiles={["audio/*"]}
-              dropzoneClass={classes.dropzone}
-              useChipsForPreview
-              filesLimit={1}
-            />
-          </FormControl>
-
+          <Grid container spacing = {3}>
+            <Grid item xs={6}>
+              <FormControl fullWidth margin="normal">
+                <DropzoneArea
+                  dropzoneText={"Drag 'n' drop, or click to select"}
+                  onChange={setFiles}
+                  acceptedFiles={["audio/*"]}
+                  dropzoneClass={classes.dropzone}
+                  useChipsForPreview
+                  filesLimit={1}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <AudioRecord
+                setFiles={setFiles}
+              />
+            </Grid>
+          </Grid>
           <FormControl fullWidth margin="normal">
             <Button
               type="submit"
