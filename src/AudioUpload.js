@@ -7,40 +7,37 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import React from "react";
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import FoursquareSuggest from "./FoursquareSuggest";
 import foursquare from "./APIClient";
-import AudioRecord from './AudioRecord'
-
-
-const useStyles = makeStyles(theme => ({
+import AudioRecord from "./AudioRecord";
+const useStyles = makeStyles((theme) => ({
   dropzone: {
     textAlign: "center",
     "& p": {
       color: theme.palette.text.secondary,
       fontSize: "1rem",
-      marginTop: "15%"
+      marginTop: "15%",
     },
     "& .MuiChip-root": {
       maxWidth: "50%",
-      marginTop: theme.spacing(2)
-    }
-  }
+      marginTop: theme.spacing(2),
+    },
+  },
 }));
 
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
   const classes = useStyles();
   const history = useHistory();
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     if (files instanceof Blob) {
       formData.append("ext", "mp3");
       formData.append("file", files);
-    }
-    else {
+    } else {
       if (!files.length) return alert("No audio file selected.");
       const ext = files[0].name.split(".").pop();
       formData.append("ext", ext);
@@ -58,15 +55,15 @@ export default function AudioUpload() {
 
     return foursquare
       .post("demo/marsbot/audio/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       })
-      .then(response => {
+      .then((response) => {
         history.push("/");
       });
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" maxWidth="xs">
       <Box mt={8}>
         <Typography component="h1" variant="h5">
           Upload an audio
@@ -85,7 +82,7 @@ export default function AudioUpload() {
               label="Set jingle"
             />
           </RadioGroup>
-          <Grid container spacing = {3}>
+          <Grid container spacing={3}>
             <Grid item xs={6}>
               <FormControl fullWidth margin="normal">
                 <DropzoneArea
@@ -99,9 +96,7 @@ export default function AudioUpload() {
               </FormControl>
             </Grid>
             <Grid item xs={6}>
-              <AudioRecord
-                setFiles={setFiles}
-              />
+              <AudioRecord setFiles={setFiles} />
             </Grid>
           </Grid>
           <FormControl fullWidth margin="normal">

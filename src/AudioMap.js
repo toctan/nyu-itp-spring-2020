@@ -5,7 +5,7 @@ import {
   Grow,
   List,
   Popper,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import { LocationOn } from "@material-ui/icons";
 import { usePopupState, bindPopper } from "material-ui-popup-state/hooks";
@@ -14,14 +14,14 @@ import React from "react";
 
 import AudioItem from "./AudioItem";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   markerIcon: {
     fontSize: theme.typography.h3.fontSize,
     transform: "translate(-50%, -100%)",
     "&.active": {
-      color: theme.palette.primary.main
-    }
-  }
+      color: theme.palette.primary.main,
+    },
+  },
 }));
 
 function Marker(props) {
@@ -34,7 +34,7 @@ function Marker(props) {
   let photoSrc;
   const venue = audio.venues[0];
   // ["venues"][0]["photos"]["groups"][0]["items"][0]["prefix"]
-  if (venue.photos.count === 1) {
+  if (venue.photos) {
     const pItem = venue.photos.groups[0].items[0];
     photoSrc = `${pItem.prefix}${pItem.width}x${pItem.height}${pItem.suffix}`;
   }
@@ -97,7 +97,7 @@ export default function AudioMap(props) {
   // TODO: calculate center & zoom from audio venue locations
   const defaultProps = {
     center: { lat: 40.7484, lng: -73.9857 },
-    zoom: 13
+    zoom: 13,
   };
 
   const renderMarker = (audio, index) => {
@@ -119,7 +119,7 @@ export default function AudioMap(props) {
     <GoogleMapReact
       bootstrapURLKeys={{
         key: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
-        language: "en"
+        language: "en",
       }}
       defaultCenter={defaultProps.center}
       defaultZoom={defaultProps.zoom}
