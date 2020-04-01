@@ -13,6 +13,7 @@ import GoogleMapReact from "google-map-react";
 import React from "react";
 
 import AudioItem from "./AudioItem";
+import findZoomAndCenter from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   markerIcon: {
@@ -99,6 +100,22 @@ export default function AudioMap(props) {
     center: { lat: 40.7484, lng: -73.9857 },
     zoom: 13,
   };
+  const { center, zoom } = findZoomAndCenter(
+    {
+      size: {
+        width: (window.innerWidth / 3) * 2,
+        height: window.innerHeight - 64
+      },
+      ...defaultProps
+    },
+    audios.map(audio => {
+      const location = audio.venues[0].location;
+      return {
+        lat: location.lat,
+        lng: location.lng
+      };
+    })
+  );
 
   const renderMarker = (audio, index) => {
     const location = audio.venues[0].location;
@@ -123,6 +140,8 @@ export default function AudioMap(props) {
       }}
       defaultCenter={defaultProps.center}
       defaultZoom={defaultProps.zoom}
+      center={center}
+      zoom={zoom - 0.2}
     >
       {audios.map(renderMarker)}
     </GoogleMapReact>
