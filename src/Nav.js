@@ -10,7 +10,7 @@ import {
   Tooltip,
   Typography
 } from "@material-ui/core";
-import { PlaylistAdd } from "@material-ui/icons";
+import { PlaylistAdd, Publish } from "@material-ui/icons";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import {
@@ -21,6 +21,7 @@ import {
 import React from "react";
 
 import User from "./User";
+import ChannelCreateDialog from "./ChannelCreate";
 
 export default function Nav(props) {
   const popupState = usePopupState({ variant: "popper", popupId: "demoMenu" });
@@ -32,6 +33,8 @@ export default function Nav(props) {
     setUser(null);
     history.push("/");
   };
+
+  const [chanOpen, setChanOpen] = React.useState(false);
 
   return (
     <>
@@ -56,10 +59,23 @@ export default function Nav(props) {
 
           {user && (
             <>
+              <ChannelCreateDialog
+                open={chanOpen}
+                handleClose={() => setChanOpen(false)}
+              />
+              <Tooltip
+                title="Create a new channel"
+                aria-label="create new channel"
+              >
+                <IconButton color="inherit" onClick={() => setChanOpen(true)}>
+                  <PlaylistAdd fontSize="large" />
+                </IconButton>
+              </Tooltip>
+
               <Link component={RouterLink} to="/upload" color="inherit">
                 <Tooltip title="Upload a new marsbotaudio" aria-label="upload">
                   <IconButton color="inherit">
-                    <PlaylistAdd fontSize="large" />
+                    <Publish fontSize="large" />
                   </IconButton>
                 </Tooltip>
               </Link>
