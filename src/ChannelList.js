@@ -5,11 +5,12 @@ import {
   CardContent,
   CardMedia,
   Container,
-  Grid
+  Grid,
+  Typography,
+  makeStyles
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
-import Typography from "@material-ui/core/Typography";
 
 import qs from "qs";
 
@@ -38,8 +39,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ChannelList() {
+export default function ChannelList(props) {
   const classes = useStyles();
+  const location = useLocation();
   const { user } = React.useContext(User.Context);
   const [channels, setChannels] = React.useState([]);
 
@@ -53,65 +55,63 @@ export default function ChannelList() {
       .then(resp => setChannels(resp.data.response.channels));
   }, [user]);
 
-  const handleDelete = channel_id => {
+  const handleDelete = channelId => {
     if (!window.confirm("Are you sure you want to delete this channel?"))
       return;
     foursquare
       .post(
-        "demo/marsbot/channel/delete",
+        "demo/marsbot/audio/channels/delete",
         qs.stringify({
-          id: channel_id
+          id: channelId
         })
       )
-      .then(resp => setChannels(channels.filter(c => c.id !== channel_id)));
+      .then(resp => setChannels(channels.filter(c => c.id !== channelId)));
   };
 
-  const renderChannel = (channel, index) => (
-    <Grid item key={index} xs={12} sm={6} md={4}>
-      <Card className={classes.channel}>
-        <CardMedia
-          className={classes.cardMedia}
-          image={`https://source.unsplash.com/random?${index}`}
-          title={channel.title}
-        />
-        <CardContent className={classes.cardContent}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {channel.title}
-          </Typography>
-          <Typography>{channel.description}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small" color="primary">
-            Edit
-          </Button>
-          <Button
-            size="small"
-            color="primary"
-            onClick={() => handleDelete(channel.id)}
-          >
-            Delete
-          </Button>
-        </CardActions>
-      </Card>
-    </Grid>
-  );
+  const renderChannel = (channel, index) => {
+    if (index + 1 === channels.length) channel.id = "5e8cf755bbfabd0006b0f2e2";
+    return (
+      // TODO: use channel.id for key
+      <Grid item key={index} xs={12} sm={6} md={4}>
+        <Card className={classes.channel}>
+          <CardMedia
+            className={classes.cardMedia}
+            image={`https://source.unsplash.com/random?${index}`}
+            title={channel.title}
+          />
+          <CardContent className={classes.cardContent}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {channel.title}
+            </Typography>
+            <Typography>{channel.description}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button
+              size="small"
+              color="primary"
+              component={RouterLink}
+              to={{
+                pathname: `/channel/${channel.id}/edit`,
+                state: { background: location, channel: channel }
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => handleDelete(channel.id)}
+            >
+              Delete
+            </Button>
+          </CardActions>
+        </Card>
+      </Grid>
+    );
+  };
 
   return (
     <React.Fragment>
-      <div className={classes.heroContent}>
-        <Container maxWidth="sm">
-          <Typography
-            component="h1"
-            variant="h3"
-            align="center"
-            color="textPrimary"
-            gutterBottom
-          >
-            My Channels
-          </Typography>
-        </Container>
-      </div>
-
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {channels.map(renderChannel)}

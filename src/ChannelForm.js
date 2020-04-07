@@ -5,38 +5,56 @@ import {
   DialogContent,
   DialogTitle
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
 import foursquare from "./APIClient";
 
-export default function ChannelCreateDialog(props) {
+export default function ChannelForm() {
   const history = useHistory();
-  const { open, handleClose } = props;
+  const location = useLocation();
+  const editing = location.state && location.state.channel;
+  const [channel, setChannel] = React.useState(
+    editing || {
+      title: "",
+      description: ""
+    }
+  );
 
   const handleSubmit = event => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    return foursquare
-      .post("demo/marsbot/audio/channels/add", formData)
-      .then(response => {
-        const channel = response.data.response;
-        history.push(`/channel/${channel.id}`);
-      });
+    let action = "demo/marsbot/audio/channels/";
+    action += editing ? "update" : "add";
+    return foursquare.post(action, formData).then(response => {
+      history.push("/channels");
+    });
+  };
+
+  const handleClose = () => history.goBack();
+
+  const handleChange = event => {
+    const input = event.target;
+    setChannel({ ...channel, [input.name]: input.value });
   };
 
   return (
     <Dialog
-      open={open}
+      open={true}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Create a new channel</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {editing ? "Edit" : "Create a new channel"}
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
+        <input name="id" type="hidden" value={channel.id} />
         <DialogContent>
           <TextField
             name="title"
+            value={channel.title}
+            onChange={handleChange}
             label="Title"
             autoFocus
             required
@@ -45,6 +63,8 @@ export default function ChannelCreateDialog(props) {
           />
           <TextField
             name="description"
+            value={channel.description}
+            onChange={handleChange}
             label="Description"
             variant="outlined"
             margin="normal"
@@ -57,7 +77,7 @@ export default function ChannelCreateDialog(props) {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button type="submit" color="primary">
-            Create
+            Submit
           </Button>
         </DialogActions>
       </form>

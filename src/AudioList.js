@@ -64,16 +64,16 @@ export default function AudioList(props) {
       });
   }, [scrollTo]);
 
-  const handleDelete = audio_id => {
+  const handleDelete = audioId => {
     if (!window.confirm("Are you sure you want to delete this audio?")) return;
     foursquare
       .post(
         "demo/marsbot/audio/delete",
         qs.stringify({
-          audioFileId: audio_id
+          audioFileId: audioId
         })
       )
-      .then(resp => setAudios(audios.filter(a => a.id !== audio_id)))
+      .then(resp => setAudios(audios.filter(a => a.id !== audioId)))
       .catch(error => console.log(error));
   };
 

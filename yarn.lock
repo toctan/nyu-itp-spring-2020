@@ -8936,7 +8936,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.0.0, prop-types@^15.5.6, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/prop-types/download/prop-types-15.7.2.tgz?cache=0&sync_timestamp=1577607963703&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fprop-types%2Fdownload%2Fprop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -9155,11 +9155,6 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.npm.taobao.org/react-error-overlay/download/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha1-Hc+0WatnHVP2YKmRUTyy8KBVMQg=
 
-react-ga@^2.2.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.7.0.tgz#24328f157f31e8cffbf4de74a3396536679d8d7c"
-  integrity sha512-AjC7UOZMvygrWTc2hKxTDvlMXEtbmA0IgJjmkhgmQQ3RkXrWR11xEagLGFGaNyaPnmg24oaIiaNPnEoftUhfXA==
-
 react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0:
   version "16.13.0"
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-16.13.0.tgz?cache=0&sync_timestamp=1582749318430&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-16.13.0.tgz#0f37c3613c34fe6b37cd7f763a0d6293ab15c527"
@@ -9174,14 +9169,6 @@ react-lifecycles-compat@^3.0.2:
   version "3.0.4"
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
-
-react-mic@^12.4.1:
-  version "12.4.1"
-  resolved "https://registry.yarnpkg.com/react-mic/-/react-mic-12.4.1.tgz#6476a321ccd3babc61ebb12319b0fc0db4ca30c3"
-  integrity sha512-l580F9Mv6NRslSQj+80azx2rr/5OjWISEsjXx2GXBXcLvnT9vGeSYHzFVwDhGBjo/cj25AzXDg+rSp4Bz/qS2w==
-  dependencies:
-    prop-types "^15.5.10"
-    react-ga "^2.2.0"
 
 react-moment@^0.9.7:
   version "0.9.7"

@@ -6,35 +6,41 @@ import {
   Link,
   Menu,
   MenuItem,
+  Tab,
+  Tabs,
   Toolbar,
-  Tooltip,
-  Typography
+  Tooltip
 } from "@material-ui/core";
 import { PlaylistAdd, Publish } from "@material-ui/icons";
-import { Link as RouterLink, useHistory } from "react-router-dom";
-import MenuIcon from "@material-ui/icons/Menu";
+import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import {
   usePopupState,
   bindMenu,
   bindTrigger
 } from "material-ui-popup-state/hooks";
+import MenuIcon from "@material-ui/icons/Menu";
 import React from "react";
 
 import User from "./User";
-import ChannelCreateDialog from "./ChannelCreate";
 
 export default function Nav(props) {
   const popupState = usePopupState({ variant: "popper", popupId: "demoMenu" });
   const { user, setUser } = React.useContext(User.Context);
   const history = useHistory();
+  const location = useLocation();
+
+  const tabs = {
+    "/channels": "Channels",
+    "/subscriptions": "Subscriptions"
+  };
+  const path = window.location.pathname;
+  const active = tabs[path] ? path : false;
 
   const handleLogOut = () => {
     User.signOut();
     setUser(null);
     history.push("/");
   };
-
-  const [chanOpen, setChanOpen] = React.useState(false);
 
   return (
     <>
@@ -44,8 +50,14 @@ export default function Nav(props) {
             <MenuIcon />
           </IconButton>
 
-          <Box flexGrow={1} ml={2}>
-            <Typography variant="h6" color="inherit" noWrap>
+          <Box display="flex" alignItems="center" flexGrow={1}>
+            <Box
+              fontSize="h6.fontSize"
+              fontWeight="fontWeightMedium"
+              color="inherit"
+              /* ml={1} */
+              mr={2}
+            >
               <Link
                 component={RouterLink}
                 to="/"
@@ -54,20 +66,34 @@ export default function Nav(props) {
               >
                 Marsbot Audio
               </Link>
-            </Typography>
+            </Box>
+            <Tabs value={active}>
+              {Object.entries(tabs).map(t => (
+                <Tab
+                  component={RouterLink}
+                  key={t[0]}
+                  to={t[0]}
+                  value={t[0]}
+                  label={t[1]}
+                />
+              ))}
+            </Tabs>
           </Box>
 
           {user && (
             <>
-              <ChannelCreateDialog
-                open={chanOpen}
-                handleClose={() => setChanOpen(false)}
-              />
               <Tooltip
                 title="Create a new channel"
                 aria-label="create new channel"
               >
-                <IconButton color="inherit" onClick={() => setChanOpen(true)}>
+                <IconButton
+                  color="inherit"
+                  component={RouterLink}
+                  to={{
+                    pathname: "/channel/create",
+                    state: { background: location }
+                  }}
+                >
                   <PlaylistAdd fontSize="large" />
                 </IconButton>
               </Tooltip>
