@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ChannelList(props) {
+export default function ChannelList({ action }) {
   const classes = useStyles();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
@@ -47,20 +47,20 @@ export default function ChannelList(props) {
 
   React.useEffect(() => {
     foursquare
-      .get("demo/marsbot/audio/channels/fetchByOwner", {
+      .get(`demo/marsbot/audio/channels/${action}`, {
         params: {
           userId: user.id
         }
       })
       .then(resp => setChannels(resp.data.response.channels));
-  }, [user]);
+  }, [action, user, location]);
 
   const handleDelete = channelId => {
     if (!window.confirm("Are you sure you want to delete this channel?"))
       return;
     foursquare
       .post(
-        "demo/marsbot/audio/channels/delete",
+        "demo/marsbot/audio/channels/subscribe",
         qs.stringify({
           id: channelId
         })
@@ -69,7 +69,8 @@ export default function ChannelList(props) {
   };
 
   const renderChannel = (channel, index) => {
-    if (index + 1 === channels.length) channel.id = "5e8cf755bbfabd0006b0f2e2";
+    // 5e8cfd3c8371990006da6c14
+    if (index + 1 === channels.length) channel.id = "5e8cfda58371990006da6c2d";
     return (
       // TODO: use channel.id for key
       <Grid item key={index} xs={12} sm={6} md={4}>
@@ -85,26 +86,6 @@ export default function ChannelList(props) {
             </Typography>
             <Typography>{channel.description}</Typography>
           </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              component={RouterLink}
-              to={{
-                pathname: `/channel/${channel.id}/edit`,
-                state: { background: location, channel: channel }
-              }}
-            >
-              Edit
-            </Button>
-            <Button
-              size="small"
-              color="primary"
-              onClick={() => handleDelete(channel.id)}
-            >
-              Delete
-            </Button>
-          </CardActions>
         </Card>
       </Grid>
     );
