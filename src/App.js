@@ -5,6 +5,7 @@ import React from "react";
 import User from "./User";
 import AudioList from "./AudioList";
 import AudioUpload from "./AudioUpload";
+import ChannelList from "./ChannelList";
 import Nav from "./Nav";
 import SignIn from "./SignIn";
 
@@ -36,6 +37,9 @@ export default function App() {
           </Route>
           <PrivateRoute path="/upload">
             <AudioUpload />
+          </PrivateRoute>
+          <PrivateRoute path="/channels">
+            <ChannelList />
           </PrivateRoute>
           <PrivateRoute path="/">
             <AudioList />
