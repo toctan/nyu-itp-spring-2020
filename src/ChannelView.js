@@ -7,8 +7,14 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText
-} from '@material-ui/core';
-import { useParams } from "react-router-dom";
+} from "@material-ui/core";
+import {
+  Link as RouterLink,
+  useHistory,
+  useLocation,
+  useParams
+} from "react-router-dom";
+
 import React from "react";
 
 import qs from "qs";
@@ -20,6 +26,8 @@ import foursquare from "./APIClient";
 
 export default function ChannelView() {
   let { id } = useParams();
+  const history = useHistory();
+  const location = useLocation();
   const { user } = React.useContext(User.Context);
   const [channel, setChannel] = React.useState(null);
   const [audios, setAudios] = React.useState([]);
@@ -33,10 +41,23 @@ export default function ChannelView() {
       })
       .then(resp => {
         const channel = resp.data.response;
+        channel.id = id;
         setChannel(channel);
       });
-  }, [id]);
+  }, [id, location]);
 
+  const handleDelete = () => {
+    if (!window.confirm("Are you sure you want to delete this channel?"))
+      return;
+    foursquare
+      .post(
+        "demo/marsbot/audio/channels/delete",
+        qs.stringify({
+          id
+        })
+      )
+      .then(resp => history.push("/channels"));
+  };
   const header = channel && (
     <ListItem divider key="title">
       <Link href={user.profile} target="_blank" rel="noopener">
@@ -56,11 +77,21 @@ export default function ChannelView() {
         {+user.id === channel.userId && (
           <div>
             <ListActionItem edge="start" icon={Add} text="Add audio" />
-            <ListActionItem icon={EditOutlined} text="Edit" />
+            <ListActionItem
+              icon={EditOutlined}
+              text="Edit"
+              rootProps={{
+                component: RouterLink,
+                to: {
+                  pathname: `/channel/${channel.id}/edit`,
+                  state: { background: location, channel: channel }
+                }
+              }}
+            />
             <ListActionItem
               icon={DeleteOutline}
               text="Delete"
-              /* rootProps={{ onClick: () => handleDelete(audio.id) }} */
+              rootProps={{ onClick: handleDelete }}
             />
           </div>
         )}

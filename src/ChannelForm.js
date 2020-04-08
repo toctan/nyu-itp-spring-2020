@@ -28,7 +28,8 @@ export default function ChannelForm() {
     let action = "demo/marsbot/audio/channels/";
     action += editing ? "update" : "add";
     return foursquare.post(action, formData).then(response => {
-      history.push("/channels");
+      const channelId = channel.id || response.data.response.id;
+      history.push(`/channel/${channelId}`);
     });
   };
 
