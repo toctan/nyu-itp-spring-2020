@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import React from "react";
 
-import AudioList from "./AudioList";
+import MarsbotHome from "./MarsbotHome";
 import AudioUpload from "./AudioUpload";
 import ChannelForm from "./ChannelForm";
 import ChannelList from "./ChannelList";
@@ -29,7 +29,7 @@ function RouteSwitch() {
           <AudioUpload />
         </Route>
         <Route path="/channel/create">
-          <AudioList />
+          <MarsbotHome />
           <ChannelForm />
         </Route>
         <Route path="/channels">
@@ -39,7 +39,7 @@ function RouteSwitch() {
           <ChannelList action="fetchSubscribed" />
         </Route>
         <Route path="/">
-          <AudioList />
+          <MarsbotHome />
         </Route>
       </Switch>
 
