@@ -32,7 +32,11 @@ export default function ChannelForm() {
     });
   };
 
-  const handleClose = () => history.goBack();
+  const handleClose = () => {
+    const background = location.state && location.state.background;
+    if (background) history.goBack();
+    else history.push("/");
+  };
 
   const handleChange = event => {
     const input = event.target;

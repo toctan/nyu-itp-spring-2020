@@ -28,6 +28,10 @@ function RouteSwitch() {
         <Route path="/upload">
           <AudioUpload />
         </Route>
+        <Route path="/channel/create">
+          <AudioList />
+          <ChannelForm />
+        </Route>
         <Route path="/channels">
           <ChannelList action="fetchByOwner" />
         </Route>
