@@ -12,6 +12,7 @@ import AudioUpload from "./AudioUpload";
 import ChannelForm from "./ChannelForm";
 import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
+import AudioAttach from "./AudioAttach";
 import Nav from "./Nav";
 import SignIn from "./SignIn";
 import User from "./User";
@@ -54,6 +55,9 @@ function RouteSwitch() {
           </Route>
           <Route path="/channel/:id/edit">
             <ChannelForm />
+          </Route>
+          <Route path="/audio/:id/attach">
+            <AudioAttach />
           </Route>
         </>
       )}
