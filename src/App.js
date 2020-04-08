@@ -11,6 +11,7 @@ import MarsbotHome from "./MarsbotHome";
 import AudioUpload from "./AudioUpload";
 import ChannelForm from "./ChannelForm";
 import ChannelList from "./ChannelList";
+import ChannelView from "./ChannelView";
 import Nav from "./Nav";
 import SignIn from "./SignIn";
 import User from "./User";
@@ -31,6 +32,9 @@ function RouteSwitch() {
         <Route path="/channel/create">
           <MarsbotHome />
           <ChannelForm />
+        </Route>
+        <Route path="/channel/:id">
+          <ChannelView />
         </Route>
         <Route path="/channels">
           <ChannelList action="fetchByOwner" />

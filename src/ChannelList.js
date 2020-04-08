@@ -6,8 +6,8 @@ import {
   Grid,
   Typography,
   makeStyles
-} from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
+} from "@material-ui/core";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
 
 import User from "./User";
@@ -56,6 +56,8 @@ export default function ChannelList({ action }) {
             className={classes.cardMedia}
             image={`https://source.unsplash.com/random?${index}`}
             title={channel.title}
+            component={RouterLink}
+            to={`/channel/${channel.id}`}
           />
           <CardContent className={classes.cardContent}>
             <Typography gutterBottom variant="h5" component="h2">
