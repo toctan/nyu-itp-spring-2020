@@ -10,6 +10,7 @@ import {
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
 
+import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
 
@@ -18,7 +19,8 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(8)
   },
-  channel: {
+  card: {
+    position: "relative",
     height: "100%",
     display: "flex",
     flexDirection: "column"
@@ -28,6 +30,11 @@ const useStyles = makeStyles(theme => ({
   },
   cardContent: {
     flexGrow: 1
+  },
+  subscribe: {
+    position: "absolute",
+    top: "5%",
+    right: "5%"
   }
 }));
 
@@ -51,7 +58,7 @@ export default function ChannelList({ action }) {
     return (
       // TODO: use channel.id for key
       <Grid item key={index} xs={12} sm={6} md={4}>
-        <Card className={classes.channel}>
+        <Card className={classes.card}>
           <CardMedia
             className={classes.cardMedia}
             image={`https://source.unsplash.com/random?${index}`}
@@ -64,6 +71,12 @@ export default function ChannelList({ action }) {
               {channel.title}
             </Typography>
             <Typography>{channel.description}</Typography>
+
+            <SubscribeIcon
+              channelId={channel.id}
+              subscribed={true} // TODO: use channel.subscribed
+              className={classes.subscribe}
+            />
           </CardContent>
         </Card>
       </Grid>

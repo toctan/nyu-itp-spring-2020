@@ -1,7 +1,6 @@
-import { Add, DeleteOutline, EditOutlined, Favorite } from "@material-ui/icons";
+import { Add, DeleteOutline, EditOutlined } from "@material-ui/icons";
 import {
   Avatar,
-  IconButton,
   Link,
   ListItem,
   ListItemAvatar,
@@ -14,13 +13,13 @@ import {
   useLocation,
   useParams
 } from "react-router-dom";
-
 import React from "react";
 
 import qs from "qs";
 
 import AudioList from "./AudioList";
 import ListActionItem from "./ListActionItem";
+import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
 
@@ -44,7 +43,7 @@ export default function ChannelView() {
         channel.id = id;
         setChannel(channel);
       });
-  }, [id, location]);
+  }, [id, user, location]);
 
   const handleDelete = () => {
     if (!window.confirm("Are you sure you want to delete this channel?"))
@@ -58,6 +57,7 @@ export default function ChannelView() {
       )
       .then(resp => history.push("/channels"));
   };
+
   const header = channel && (
     <ListItem divider key="title">
       <Link href={user.profile} target="_blank" rel="noopener">
@@ -98,9 +98,10 @@ export default function ChannelView() {
       </div>
 
       <ListItemSecondaryAction>
-        <IconButton edge="end" aria-label="play" color="secondary">
-          <Favorite fontSize="large" />
-        </IconButton>
+        <SubscribeIcon
+          channelId={id}
+          subscribed={channel && channel.subscribers.indexOf(user.id) !== -1}
+        />
       </ListItemSecondaryAction>
     </ListItem>
   );
