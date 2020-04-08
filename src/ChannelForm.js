@@ -75,7 +75,9 @@ export default function ChannelForm() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button color="primary" onClick={handleClose}>
+            Cancel
+          </Button>
           <Button type="submit" color="primary">
             Submit
           </Button>

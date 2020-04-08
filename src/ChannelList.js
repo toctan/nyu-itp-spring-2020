@@ -1,29 +1,21 @@
 import {
-  Button,
   Card,
-  CardActions,
   CardContent,
   CardMedia,
   Container,
   Grid,
   Typography,
   makeStyles
-} from "@material-ui/core";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+} from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
 import React from "react";
-
-import qs from "qs";
 
 import User from "./User";
 import foursquare from "./APIClient";
 
 const useStyles = makeStyles(theme => ({
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6)
-  },
   cardGrid: {
-    paddingTop: theme.spacing(8),
+    paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(8)
   },
   channel: {
@@ -55,22 +47,7 @@ export default function ChannelList({ action }) {
       .then(resp => setChannels(resp.data.response.channels));
   }, [action, user, location]);
 
-  const handleDelete = channelId => {
-    if (!window.confirm("Are you sure you want to delete this channel?"))
-      return;
-    foursquare
-      .post(
-        "demo/marsbot/audio/channels/subscribe",
-        qs.stringify({
-          id: channelId
-        })
-      )
-      .then(resp => setChannels(channels.filter(c => c.id !== channelId)));
-  };
-
   const renderChannel = (channel, index) => {
-    // 5e8cfd3c8371990006da6c14
-    if (index + 1 === channels.length) channel.id = "5e8cfda58371990006da6c2d";
     return (
       // TODO: use channel.id for key
       <Grid item key={index} xs={12} sm={6} md={4}>

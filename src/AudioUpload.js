@@ -12,26 +12,26 @@ import Grid from "@material-ui/core/Grid";
 import FoursquareSuggest from "./FoursquareSuggest";
 import foursquare from "./APIClient";
 import AudioRecord from "./AudioRecord";
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   dropzone: {
     textAlign: "center",
     "& p": {
       color: theme.palette.text.secondary,
       fontSize: "1rem",
-      marginTop: "15%",
+      marginTop: "15%"
     },
     "& .MuiChip-root": {
       maxWidth: "50%",
-      marginTop: theme.spacing(2),
-    },
-  },
+      marginTop: theme.spacing(2)
+    }
+  }
 }));
 
 export default function AudioUpload() {
   const [files, setFiles] = React.useState([]);
   const classes = useStyles();
   const history = useHistory();
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     const formData = new FormData(event.target);
     if (files instanceof Blob) {
@@ -55,16 +55,16 @@ export default function AudioUpload() {
 
     return foursquare
       .post("demo/marsbot/audio/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" }
       })
-      .then((response) => {
+      .then(response => {
         history.push("/");
       });
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box mt={8}>
+      <Box pt={4}>
         <Typography component="h1" variant="h5">
           Upload an audio
         </Typography>
