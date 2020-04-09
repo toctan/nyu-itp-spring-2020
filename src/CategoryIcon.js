@@ -1,8 +1,8 @@
-import { Avatar, makeStyles } from '@material-ui/core';
+import { Avatar, makeStyles } from "@material-ui/core";
 
-import React from 'react';
+import React from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: "#f94878",
   },
@@ -16,6 +16,8 @@ export default function CategoryIcon(props) {
   return (
     <Avatar
       src={`${icon.prefix}100${icon.suffix}`}
-      aria-label="category" className={classes.avatar} />
+      aria-label="category"
+      className={classes.avatar}
+    />
   );
-};
+}

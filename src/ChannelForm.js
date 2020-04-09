@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
 } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
@@ -18,16 +18,16 @@ export default function ChannelForm() {
   const [channel, setChannel] = React.useState(
     editing || {
       title: "",
-      description: ""
+      description: "",
     }
   );
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     let action = "demo/marsbot/audio/channels/";
     action += editing ? "update" : "add";
-    return foursquare.post(action, formData).then(response => {
+    return foursquare.post(action, formData).then((response) => {
       const channelId = channel.id || response.data.response.id;
       history.push(`/channel/${channelId}`);
     });
@@ -39,7 +39,7 @@ export default function ChannelForm() {
     else history.push("/");
   };
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const input = event.target;
     setChannel({ ...channel, [input.name]: input.value });
   };

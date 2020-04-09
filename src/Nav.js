@@ -12,21 +12,21 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  useScrollTrigger
+  useScrollTrigger,
 } from "@material-ui/core";
 import {
   PlaylistAdd,
   Publish,
   Apps,
   Subscriptions,
-  MoreVert
+  MoreVert,
 } from "@material-ui/icons";
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   usePopupState,
   bindMenu,
-  bindTrigger
+  bindTrigger,
 } from "material-ui-popup-state/hooks";
 import React from "react";
 
@@ -42,36 +42,36 @@ function HideOnScroll({ children }) {
   );
 }
 
-const NavTabs = withStyles(theme => ({
+const NavTabs = withStyles((theme) => ({
   indicator: {
     backgroundColor: "white",
-    height: "4px"
-  }
+    height: "4px",
+  },
 }))(Tabs);
 
-const NavTabItem = withStyles(theme => ({
+const NavTabItem = withStyles((theme) => ({
   root: {
     // textTransform: "none",
     opacity: 1,
     minWidth: 0, // theme.spacing(10),
     minHeight: theme.spacing(8),
     paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
-  }
-}))(props => <Tab disableRipple {...props} />);
+    paddingRight: theme.spacing(1),
+  },
+}))((props) => <Tab disableRipple {...props} />);
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   logo: {
     marginLeft: theme.spacing(1.5),
     [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   appbar: {
     "& + *": {
-      marginTop: theme.spacing(8)
-    }
-  }
+      marginTop: theme.spacing(8),
+    },
+  },
 }));
 
 export default function Nav(props) {
@@ -86,10 +86,10 @@ export default function Nav(props) {
     ["/channels", <Apps />, null, "My channels"],
     ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
     ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
-    ["/upload", <Publish />, null, "Upload an audio"]
+    ["/upload", <Publish />, null, "Upload an audio"],
   ];
   const path = window.location.pathname;
-  const active = tabs.filter(t => t[0] === path).length ? path : false;
+  const active = tabs.filter((t) => t[0] === path).length ? path : false;
 
   const handleLogOut = () => {
     User.signOut();
@@ -118,7 +118,7 @@ export default function Nav(props) {
           {user && (
             <>
               <NavTabs variant="fullWidth" value={active}>
-                {tabs.map(t => {
+                {tabs.map((t) => {
                   const [path, icon, state, title] = t;
                   return (
                     <NavTabItem
@@ -126,7 +126,7 @@ export default function Nav(props) {
                       key={path}
                       to={{
                         pathname: path,
-                        state: state
+                        state: state,
                       }}
                       value={path}
                       label={

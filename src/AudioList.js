@@ -4,16 +4,16 @@ import React from "react";
 import AudioItem from "./AudioItem";
 import AudioMap from "./AudioMap";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   gridItem: {
     [theme.breakpoints.up("sm")]: {
       height: `calc(100vh - ${theme.spacing(8)}px)`,
-      overflowY: "auto"
-    }
+      overflowY: "auto",
+    },
   },
   activeListItem: {
-    backgroundColor: theme.palette.action.hover
-  }
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
 export default function AudioList(props) {
@@ -29,11 +29,11 @@ export default function AudioList(props) {
     element &&
       element.scrollIntoView({
         behavior: "smooth",
-        block: "start"
+        block: "start",
       });
   }, [scrollTo]);
 
-  const handlePlay = src => {
+  const handlePlay = (src) => {
     if (playing) {
       playing.pause();
       if (playing.src === src) return setPlaying(null);
@@ -47,7 +47,7 @@ export default function AudioList(props) {
   const audioItemProps = {
     playing,
     handlePlay,
-    handleDelete
+    handleDelete,
   };
 
   const audioItems = audios.map((audio, index) => (
@@ -74,9 +74,9 @@ export default function AudioList(props) {
       </Grid>
       <Grid item xs sm md className={classes.gridItem}>
         <AudioMap
-          audios={audios.filter(a => a.venues[0])}
+          audios={audios.filter((a) => a.venues[0])}
           hovering={hovering}
-          setHovering={a => {
+          setHovering={(a) => {
             setHovering(a);
             setScrollTo(a);
           }}

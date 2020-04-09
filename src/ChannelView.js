@@ -5,13 +5,13 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
-  ListItemText
+  ListItemText,
 } from "@material-ui/core";
 import {
   Link as RouterLink,
   useHistory,
   useLocation,
-  useParams
+  useParams,
 } from "react-router-dom";
 import React from "react";
 
@@ -35,10 +35,10 @@ export default function ChannelView() {
     foursquare
       .get("demo/marsbot/audio/channels/fetch", {
         params: {
-          id
-        }
+          id,
+        },
       })
-      .then(resp => {
+      .then((resp) => {
         const channel = resp.data.response;
         channel.id = id;
         setChannel(channel);
@@ -52,10 +52,10 @@ export default function ChannelView() {
       .post(
         "demo/marsbot/audio/channels/delete",
         qs.stringify({
-          id
+          id,
         })
       )
-      .then(resp => history.push("/channels"));
+      .then((resp) => history.push("/channels"));
   };
 
   const header = channel && (
@@ -71,10 +71,10 @@ export default function ChannelView() {
           secondary={channel.description}
           primaryTypographyProps={{
             component: "h1",
-            variant: "h6"
+            variant: "h6",
           }}
         />
-        {+user.id === channel.userId && (
+        {user.id === channel.user.id && (
           <div>
             <ListActionItem edge="start" icon={Add} text="Add audio" />
             <ListActionItem
@@ -84,8 +84,8 @@ export default function ChannelView() {
                 component: RouterLink,
                 to: {
                   pathname: `/channel/${channel.id}/edit`,
-                  state: { background: location, channel: channel }
-                }
+                  state: { background: location, channel: channel },
+                },
               }}
             />
             <ListActionItem
@@ -106,7 +106,7 @@ export default function ChannelView() {
     </ListItem>
   );
 
-  const handleRemoveAudio = audioId => {
+  const handleRemoveAudio = (audioId) => {
     if (
       !window.confirm(
         "Are you sure you want to remove this audio from this channel?"
@@ -119,10 +119,10 @@ export default function ChannelView() {
         qs.stringify({
           id,
           audioFileId: audioId,
-          attached: false
+          attached: false,
         })
       )
-      .then(resp => setAudios(audios.filter(a => a.id !== audioId)));
+      .then((resp) => setAudios(audios.filter((a) => a.id !== audioId)));
   };
 
   return (

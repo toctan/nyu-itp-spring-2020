@@ -9,7 +9,7 @@ import foursquare, { tokenCookieKey } from "./APIClient";
 export default class User {
   static Context = React.createContext({
     user: null,
-    setUser: () => {}
+    setUser: () => {},
   });
 
   constructor(data) {
@@ -30,7 +30,7 @@ export default class User {
       lastName: user.lastName,
       email: user.contact.email,
       profile: user.canonicalUrl,
-      picture: `${user.photo.prefix}100x100${user.photo.suffix}`
+      picture: `${user.photo.prefix}100x100${user.photo.suffix}`,
     };
     window.localStorage.setItem(localStorageKey, JSON.stringify(data));
     return new User(data);
@@ -43,7 +43,7 @@ export default class User {
         client_id: process.env.REACT_APP_FOURSQUARE_CLIENT_ID,
         grant_type: "authorization_code",
         redirect_uri: `${window.location.origin}/signin`,
-        code: code
+        code: code,
       })
     );
     const { access_token } = response.data;

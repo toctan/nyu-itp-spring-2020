@@ -3,7 +3,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Switch,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
 import React from "react";
 import qs from "qs";
@@ -26,23 +26,23 @@ export default function MarsbotHome() {
       .get("demo/marsbot/audio/snippetuser", {
         params: {
           userId: user.id,
-          tz: tz
-        }
+          tz: tz,
+        },
       })
-      .then(resp => setAudios(resp.data.response.audio));
+      .then((resp) => setAudios(resp.data.response.audio));
   }, [user]);
 
-  const handleDelete = audioId => {
+  const handleDelete = (audioId) => {
     if (!window.confirm("Are you sure you want to delete this audio?")) return;
     foursquare
       .post(
         "demo/marsbot/audio/delete",
         qs.stringify({
-          audioFileId: audioId
+          audioFileId: audioId,
         })
       )
-      .then(resp => setAudios(audios.filter(a => a.id !== audioId)))
-      .catch(error => console.log(error));
+      .then((resp) => setAudios(audios.filter((a) => a.id !== audioId)))
+      .catch((error) => console.log(error));
   };
 
   const header = (
@@ -52,14 +52,14 @@ export default function MarsbotHome() {
         primaryTypographyProps={{
           component: "h1",
           variant: "h6",
-          align: "center"
+          align: "center",
         }}
       />
       <ListItemSecondaryAction>
         <Tooltip title="Toggle venue audios only" aria-label="filter">
           <Switch
             checked={filterOn}
-            onChange={e => {
+            onChange={(e) => {
               setFilter(e.target.checked);
             }}
             color="secondary"
@@ -72,7 +72,7 @@ export default function MarsbotHome() {
 
   return (
     <AudioList
-      audios={audios.filter(a => !filterOn || a.venues[0])}
+      audios={audios.filter((a) => !filterOn || a.venues[0])}
       header={header}
       handleDelete={handleDelete}
     />

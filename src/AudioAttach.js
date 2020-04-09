@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
@@ -27,21 +27,21 @@ export default function AudioAttach() {
     foursquare
       .get(`demo/marsbot/audio/channels/fetchByOwner`, {
         params: {
-          userId: user.id
-        }
+          userId: user.id,
+        },
       })
-      .then(resp => setChannels(resp.data.response.channels));
+      .then((resp) => setChannels(resp.data.response.channels));
   }, [user]);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     let action = "demo/marsbot/audio/channels/attach";
-    return foursquare.post(action).then(response => {
+    return foursquare.post(action).then((response) => {
       history.push("/channels");
     });
   };
 
-  const handleToggle = channelId => {
+  const handleToggle = (channelId) => {
     const newChecked = new Set(checked);
     if (newChecked.has(channelId)) newChecked.delete(channelId);
     else newChecked.add(channelId);
@@ -67,7 +67,6 @@ export default function AudioAttach() {
         <DialogContent>
           <List disablePadding={true}>
             {channels.map((channel, index) => {
-              channel.id = index; // FIXME
               const labelId = `checkbox-list-label-${channel.id}`;
 
               return (

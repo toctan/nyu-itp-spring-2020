@@ -3,7 +3,7 @@ import {
   CircularProgress,
   Grid,
   TextField,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { throttle } from "throttle-debounce";
 import React from "react";
@@ -11,16 +11,16 @@ import React from "react";
 import CategoryIcon from "./CategoryIcon";
 import foursquare from "./APIClient.js";
 
-const getCurrentLocation = options => {
+const getCurrentLocation = (options) => {
   return new Promise((resolve, reject) => {
-    const success = pos => {
+    const success = (pos) => {
       const { latitude, longitude } = pos.coords;
       return resolve(`${latitude},${longitude}`);
     };
 
     navigator.geolocation.getCurrentPosition(success, reject, {
       // enableHighAccuracy: true,
-      maximumAge: 600 * 1000
+      maximumAge: 600 * 1000,
     });
   });
 };
@@ -32,17 +32,17 @@ export default function FoursquareSuggest() {
 
   const fetchData = React.useMemo(
     () =>
-      throttle(300, query => {
-        getCurrentLocation().then(location => {
+      throttle(300, (query) => {
+        getCurrentLocation().then((location) => {
           foursquare
             .get("/venues/suggestcompletion", {
               params: {
                 ll: location,
                 query: query,
-                limit: 5
-              }
+                limit: 5,
+              },
             })
-            .then(resp => {
+            .then((resp) => {
               setVenues(resp.data.response.minivenues);
             })
             .catch(console.log)
@@ -54,7 +54,7 @@ export default function FoursquareSuggest() {
     []
   );
 
-  const handleSuggest = event => {
+  const handleSuggest = (event) => {
     const query = event.target.value.trim();
     setVenues([]);
     setLoading(Boolean(query));
@@ -69,13 +69,13 @@ export default function FoursquareSuggest() {
     <>
       <Autocomplete
         options={venues}
-        getOptionLabel={option => option.name}
+        getOptionLabel={(option) => option.name}
         autoComplete
         includeInputInList
         disableOpenOnFocus
         onChange={handleSelected}
         loading={loading}
-        renderInput={params => (
+        renderInput={(params) => (
           <TextField
             {...params}
             margin="normal"
@@ -93,11 +93,11 @@ export default function FoursquareSuggest() {
                   ) : null}
                   {params.InputProps.endAdornment}
                 </React.Fragment>
-              )
+              ),
             }}
           />
         )}
-        renderOption={venue => {
+        renderOption={(venue) => {
           return (
             <Grid container alignItems="center" key={venue.id} spacing={2}>
               <Grid item>

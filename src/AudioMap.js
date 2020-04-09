@@ -104,15 +104,15 @@ export default function AudioMap(props) {
     {
       size: {
         width: (window.innerWidth / 3) * 2,
-        height: window.innerHeight - 64
+        height: window.innerHeight - 64,
       },
-      ...defaultProps
+      ...defaultProps,
     },
-    audios.map(audio => {
+    audios.map((audio) => {
       const location = audio.venues[0].location;
       return {
         lat: location.lat,
-        lng: location.lng
+        lng: location.lng,
       };
     })
   );

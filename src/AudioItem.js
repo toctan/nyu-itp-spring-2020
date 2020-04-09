@@ -3,7 +3,7 @@ import {
   MoreVert,
   PauseCircleOutline,
   PlayCircleOutline,
-  Schedule
+  Schedule,
 } from "@material-ui/icons";
 import {
   IconButton,
@@ -13,13 +13,13 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Menu,
-  MenuItem
+  MenuItem,
 } from "@material-ui/core";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import {
   usePopupState,
   bindMenu,
-  bindHover
+  bindHover,
 } from "material-ui-popup-state/hooks";
 import Moment from "react-moment";
 import React from "react";
@@ -32,7 +32,7 @@ export default function AudioItem(props) {
   const { audio, playing, handlePlay, handleDelete, divider = true } = props;
   const popupState = usePopupState({
     variant: "popover",
-    popupId: "audio-item-more-actions"
+    popupId: "audio-item-more-actions",
   });
   const venue = audio.venues[0];
   let title = "Unknown Audio",
@@ -105,7 +105,7 @@ export default function AudioItem(props) {
               component={RouterLink}
               to={{
                 pathname: `/audio/${audio.id}/attach`,
-                state: { background: location }
+                state: { background: location },
               }}
             >
               Add to channels

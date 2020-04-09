@@ -15,10 +15,10 @@ export default function SubscribeIcon(props) {
         "demo/marsbot/audio/channels/subscribe",
         qs.stringify({
           id: channelId,
-          subscribed: !subscribed
+          subscribed: !subscribed,
         })
       )
-      .then(resp => setSubscribed(!subscribed));
+      .then((resp) => setSubscribed(!subscribed));
   };
 
   return (

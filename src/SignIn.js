@@ -4,7 +4,7 @@ import {
   Button,
   CircularProgress,
   Container,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import React from "react";
@@ -17,7 +17,7 @@ const session = window.sessionStorage || window.localStorage;
 function SignInButton(props) {
   const {
     REACT_APP_FOURSQUARE_OAUTH2_URL,
-    REACT_APP_FOURSQUARE_CLIENT_ID
+    REACT_APP_FOURSQUARE_CLIENT_ID,
   } = process.env;
 
   const loc = window.location;
@@ -28,10 +28,12 @@ function SignInButton(props) {
     client_id: REACT_APP_FOURSQUARE_CLIENT_ID,
     redirect_uri: `${window.location.origin}/signin`,
     response_type: "code",
-    state
+    state,
   };
   const qs = Object.keys(params)
-    .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key]))
+    .map(
+      (key) => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
+    )
     .join("&");
   const href = `${REACT_APP_FOURSQUARE_OAUTH2_URL}authenticate?${qs}`;
 
@@ -50,11 +52,11 @@ function SignInButton(props) {
   );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 }));
 
 function SignInCallback(props) {
@@ -70,11 +72,11 @@ function SignInCallback(props) {
     }
     const from = window.atob(state);
     User.signIn(code)
-      .then(user => {
+      .then((user) => {
         setUser(user);
         history.replace(from);
       })
-      .catch(_ => history.push("/"));
+      .catch((_) => history.push("/"));
   }, [code, state, history, setUser]);
 
   return (

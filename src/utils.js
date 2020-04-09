@@ -7,7 +7,7 @@ const findZoomAndCenter = (
     size,
     center: defaultCenter = { lat: 35.689, lng: 139.741 },
     zoom: defaultZoom = 10,
-    zoomBounds = { min: 3, max: 17 }
+    zoomBounds = { min: 3, max: 17 },
   },
   points
 ) => {
@@ -19,10 +19,10 @@ const findZoomAndCenter = (
 
   const pointsNorm = points
     // convert all that latitude longitude
-    .map(pt => ({
+    .map((pt) => ({
       ...pt,
       lat: pt.lat !== undefined ? pt.lat : pt.latitude,
-      lng: pt.lng !== undefined ? pt.lng : pt.longitude
+      lng: pt.lng !== undefined ? pt.lng : pt.longitude,
     }))
     // add bounding box corners to points
     .reduce((r, pt) => {
@@ -32,13 +32,13 @@ const findZoomAndCenter = (
         r.push({
           ...pt,
           lat: pt.leftTopLatitude,
-          lng: pt.leftTopLongitude
+          lng: pt.leftTopLongitude,
         });
 
         r.push({
           ...pt,
           lat: pt.rightBottomLatitude,
-          lng: pt.rightBottomLongitude
+          lng: pt.rightBottomLongitude,
         });
       }
 
@@ -51,16 +51,16 @@ const findZoomAndCenter = (
     ({ nw: ptNW, se: ptSE }, { lat, lng }) => ({
       nw: {
         lat: Math.max(ptNW.lat, lat + eps),
-        lng: Math.min(ptNW.lng, lng - eps)
+        lng: Math.min(ptNW.lng, lng - eps),
       },
       se: {
         lat: Math.min(ptSE.lat, lat - eps),
-        lng: Math.max(ptSE.lng, lng + eps)
-      }
+        lng: Math.max(ptSE.lng, lng + eps),
+      },
     }),
     {
       nw: { lat: latFirst, lng: lngFirst },
-      se: { lat: latFirst, lng: lngFirst }
+      se: { lat: latFirst, lng: lngFirst },
     }
   );
 
@@ -98,17 +98,17 @@ const findZoomAndCenter = (
       : {
           nw: {
             lat: nw.lat,
-            lng: leftLng + dist
+            lng: leftLng + dist,
           },
           se: {
             lat: se.lat,
-            lng: leftLng + 360
-          }
+            lng: leftLng + 360,
+          },
         };
 
   const primitiveCenter = {
     lng: (bounds.se.lng + bounds.nw.lng) / 2,
-    lat: (bounds.se.lat + bounds.nw.lat) / 2
+    lat: (bounds.se.lat + bounds.nw.lat) / 2,
   };
 
   const { center: center0, zoom: zoom0 } = fitBounds(bounds, size);
@@ -118,14 +118,14 @@ const findZoomAndCenter = (
       ? primitiveCenter
       : {
           ...center0,
-          lng: center0.lng % 360
+          lng: center0.lng % 360,
         };
 
   const zoom = Math.min(Math.max(zoom0, zoomBounds.min), zoomBounds.max);
 
   return {
     center,
-    zoom
+    zoom,
   };
 };
 
