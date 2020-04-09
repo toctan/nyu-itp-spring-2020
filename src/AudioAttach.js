@@ -1,27 +1,27 @@
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import React from "react";
+
+import qs from "qs";
 
 import User from "./User";
 import foursquare from "./APIClient";
 
 export default function AudioAttach() {
+  let { id } = useParams();
   const history = useHistory();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
   const [channels, setChannels] = React.useState([]);
-  const [checked, setChecked] = React.useState(new Set());
 
   React.useEffect(() => {
     foursquare
@@ -35,17 +35,21 @@ export default function AudioAttach() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let action = "demo/marsbot/audio/channels/attach";
-    return foursquare.post(action).then((response) => {
-      history.push("/channels");
-    });
-  };
-
-  const handleToggle = (channelId) => {
-    const newChecked = new Set(checked);
-    if (newChecked.has(channelId)) newChecked.delete(channelId);
-    else newChecked.add(channelId);
-    setChecked(newChecked);
+    const formData = new FormData(event.target);
+    const channelId = formData.get("channelId");
+    const action = "demo/marsbot/audio/channels/attach";
+    return foursquare
+      .post(
+        action,
+        qs.stringify({
+          id: channelId,
+          audioFileId: id,
+          attached: true,
+        })
+      )
+      .then((response) => {
+        history.push(`/channel/${channelId}`);
+      });
   };
 
   const handleClose = () => {
@@ -62,37 +66,19 @@ export default function AudioAttach() {
       fullWidth
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Add to channels</DialogTitle>
       <form onSubmit={handleSubmit}>
+        <DialogTitle id="form-dialog-title">Add to channels</DialogTitle>
         <DialogContent>
-          <List disablePadding={true}>
-            {channels.map((channel, index) => {
-              const labelId = `checkbox-list-label-${channel.id}`;
-
-              return (
-                <ListItem
-                  disableGutters
-                  key={channel.id}
-                  role={undefined}
-                  dense
-                  button
-                  onClick={() => handleToggle(channel.id)}
-                >
-                  <ListItemIcon>
-                    <Checkbox
-                      name="channelId"
-                      edge="start"
-                      checked={checked.has(channel.id)}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ "aria-labelledby": labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText id={labelId} primary={channel.title} />
-                </ListItem>
-              );
-            })}
-          </List>
+          <RadioGroup aria-label="channel" name="channelId">
+            {channels.map((channel) => (
+              <FormControlLabel
+                key={channel.id}
+                value={channel.id}
+                control={<Radio required />}
+                label={channel.title}
+              />
+            ))}
+          </RadioGroup>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClose}>

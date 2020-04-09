@@ -50,10 +50,10 @@ export default function ChannelForm() {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">
-        {editing ? "Edit" : "Create a new channel"}
-      </DialogTitle>
       <form onSubmit={handleSubmit}>
+        <DialogTitle id="form-dialog-title">
+          {editing ? "Edit" : "Create a new channel"}
+        </DialogTitle>
         <input name="id" type="hidden" value={channel.id} />
         <DialogContent>
           <TextField

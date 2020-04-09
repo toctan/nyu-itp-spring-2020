@@ -8,11 +8,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import {
-  DeleteOutline,
-  EditOutlined,
-  FavoriteBorder,
-} from "@material-ui/icons";
+import { DeleteOutline, EditOutlined } from '@material-ui/icons';
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
 

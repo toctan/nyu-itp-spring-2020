@@ -28,6 +28,10 @@ function RouteSwitch() {
         <Route path="/signin">
           <SignIn />
         </Route>
+        <Route path="/audio/:id/attach">
+          <MarsbotHome />
+          <AudioAttach />
+        </Route>
         <Route path="/upload">
           <AudioUpload />
         </Route>
