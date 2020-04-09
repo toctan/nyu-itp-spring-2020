@@ -14,6 +14,7 @@ import foursquare from "./APIClient";
 export default function ChannelForm() {
   const history = useHistory();
   const location = useLocation();
+  const background = location.state && location.state.background;
   const editing = location.state && location.state.channel;
   const [channel, setChannel] = React.useState(
     editing || {
@@ -29,12 +30,11 @@ export default function ChannelForm() {
     action += editing ? "update" : "add";
     return foursquare.post(action, formData).then((response) => {
       const channelId = channel.id || response.data.response.id;
-      history.push(`/channel/${channelId}`);
+      history.push(editing ? background : `/channel/${channelId}`);
     });
   };
 
   const handleClose = () => {
-    const background = location.state && location.state.background;
     if (background) history.goBack();
     else history.push("/");
   };

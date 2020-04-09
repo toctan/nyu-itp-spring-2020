@@ -10,6 +10,7 @@ import React from "react";
 import MarsbotHome from "./MarsbotHome";
 import AudioUpload from "./AudioUpload";
 import ChannelForm from "./ChannelForm";
+import ChannelDelete from "./ChannelDelete";
 import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
 import AudioAttach from "./AudioAttach";
@@ -55,6 +56,9 @@ function RouteSwitch() {
           </Route>
           <Route path="/channel/:id/edit">
             <ChannelForm />
+          </Route>
+          <Route path="/channel/:id/delete">
+            <ChannelDelete />
           </Route>
           <Route path="/audio/:id/attach">
             <AudioAttach />

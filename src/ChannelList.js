@@ -1,5 +1,6 @@
 import {
   Card,
+  CardActions,
   CardContent,
   CardMedia,
   Container,
@@ -7,10 +8,15 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
+import {
+  DeleteOutline,
+  EditOutlined,
+  FavoriteBorder,
+} from "@material-ui/icons";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
 
-import SubscribeIcon from "./SubscribeIcon";
+import ListActionItem from "./ListActionItem";
 import User from "./User";
 import foursquare from "./APIClient";
 
@@ -54,14 +60,13 @@ export default function ChannelList({ action }) {
       .then((resp) => setChannels(resp.data.response.channels));
   }, [action, user, location]);
 
-  const renderChannel = (channel, index) => {
+  const renderChannel = (channel) => {
     return (
-      // TODO: use channel.id for key
-      <Grid item key={index} xs={12} sm={6} md={4}>
+      <Grid item key={channel.id} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
           <CardMedia
             className={classes.cardMedia}
-            image={`https://source.unsplash.com/random?${index}`}
+            image={`https://source.unsplash.com/random?id=${channel.id}`}
             title={channel.title}
             component={RouterLink}
             to={`/channel/${channel.id}`}
@@ -72,12 +77,38 @@ export default function ChannelList({ action }) {
             </Typography>
             <Typography>{channel.description}</Typography>
 
-            <SubscribeIcon
-              channelId={channel.id}
-              subscribed={true} // TODO: use channel.subscribed
-              className={classes.subscribe}
-            />
+            {/* <SubscribeIcon */}
+            {/*   channelId={channel.id} */}
+            {/*   subscribed={true} // TODO: use channel.subscribed */}
+            {/*   className={classes.subscribe} */}
+            {/* /> */}
           </CardContent>
+          <CardActions>
+            {/* <ListActionItem icon={FavoriteBorder} text="Subscribe" /> */}
+
+            <ListActionItem
+              icon={EditOutlined}
+              text="Edit"
+              rootProps={{
+                component: RouterLink,
+                to: {
+                  pathname: `/channel/${channel.id}/edit`,
+                  state: { background: location, channel: channel },
+                },
+              }}
+            />
+            <ListActionItem
+              icon={DeleteOutline}
+              text="Delete"
+              rootProps={{
+                component: RouterLink,
+                to: {
+                  pathname: `/channel/${channel.id}/delete`,
+                  state: { background: location },
+                },
+              }}
+            />
+          </CardActions>
         </Card>
       </Grid>
     );

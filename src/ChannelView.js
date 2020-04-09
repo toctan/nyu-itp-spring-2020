@@ -7,12 +7,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
-import {
-  Link as RouterLink,
-  useHistory,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
 import qs from "qs";
@@ -25,11 +20,13 @@ import foursquare from "./APIClient";
 
 export default function ChannelView() {
   let { id } = useParams();
-  const history = useHistory();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
   const [channel, setChannel] = React.useState(null);
   const [audios, setAudios] = React.useState([]);
+  const subscribed =
+    channel &&
+    Boolean(channel.subscribers.filter((u) => u.id === user.id).length);
 
   React.useEffect(() => {
     foursquare
@@ -44,67 +41,6 @@ export default function ChannelView() {
         setChannel(channel);
       });
   }, [id, user, location]);
-
-  const handleDelete = () => {
-    if (!window.confirm("Are you sure you want to delete this channel?"))
-      return;
-    foursquare
-      .post(
-        "demo/marsbot/audio/channels/delete",
-        qs.stringify({
-          id,
-        })
-      )
-      .then((resp) => history.push("/channels"));
-  };
-
-  const header = channel && (
-    <ListItem divider key="title">
-      <Link href={user.profile} target="_blank" rel="noopener">
-        <ListItemAvatar>
-          <Avatar alt={user.name} src={user.picture} />
-        </ListItemAvatar>
-      </Link>
-      <div>
-        <ListItemText
-          primary={channel.title}
-          secondary={channel.description}
-          primaryTypographyProps={{
-            component: "h1",
-            variant: "h6",
-          }}
-        />
-        {user.id === channel.user.id && (
-          <div>
-            <ListActionItem edge="start" icon={Add} text="Add audio" />
-            <ListActionItem
-              icon={EditOutlined}
-              text="Edit"
-              rootProps={{
-                component: RouterLink,
-                to: {
-                  pathname: `/channel/${channel.id}/edit`,
-                  state: { background: location, channel: channel },
-                },
-              }}
-            />
-            <ListActionItem
-              icon={DeleteOutline}
-              text="Delete"
-              rootProps={{ onClick: handleDelete }}
-            />
-          </div>
-        )}
-      </div>
-
-      <ListItemSecondaryAction>
-        <SubscribeIcon
-          channelId={id}
-          subscribed={channel && channel.subscribers.indexOf(user.id) !== -1}
-        />
-      </ListItemSecondaryAction>
-    </ListItem>
-  );
 
   const handleRemoveAudio = (audioId) => {
     if (
@@ -128,7 +64,58 @@ export default function ChannelView() {
   return (
     <AudioList
       audios={audios}
-      header={header}
+      header={
+        channel && (
+          <ListItem divider key="title">
+            <Link href={user.profile} target="_blank" rel="noopener">
+              <ListItemAvatar>
+                <Avatar alt={user.name} src={user.picture} />
+              </ListItemAvatar>
+            </Link>
+            <div>
+              <ListItemText
+                primary={channel.title}
+                secondary={channel.description}
+                primaryTypographyProps={{
+                  component: "h1",
+                  variant: "h6",
+                }}
+              />
+              {user.id === channel.user.id && (
+                <div>
+                  <ListActionItem edge="start" icon={Add} text="Add audio" />
+                  <ListActionItem
+                    icon={EditOutlined}
+                    text="Edit"
+                    rootProps={{
+                      component: RouterLink,
+                      to: {
+                        pathname: `/channel/${channel.id}/edit`,
+                        state: { background: location, channel: channel },
+                      },
+                    }}
+                  />
+                  <ListActionItem
+                    icon={DeleteOutline}
+                    text="Delete"
+                    rootProps={{
+                      component: RouterLink,
+                      to: {
+                        pathname: `/channel/${channel.id}/delete`,
+                        state: { background: location },
+                      },
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <ListItemSecondaryAction>
+              <SubscribeIcon channelId={id} subscribed={subscribed} />
+            </ListItemSecondaryAction>
+          </ListItem>
+        )
+      }
       handleDelete={handleRemoveAudio}
     />
   );

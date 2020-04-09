@@ -95,7 +95,6 @@ function Marker(props) {
 
 export default function AudioMap(props) {
   const { audios, hovering, setHovering, audioItemProps } = props;
-  // TODO: calculate center & zoom from audio venue locations
   const defaultProps = {
     center: { lat: 40.7484, lng: -73.9857 },
     zoom: 13,
