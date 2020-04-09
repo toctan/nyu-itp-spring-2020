@@ -8,7 +8,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { DeleteOutline, EditOutlined } from '@material-ui/icons';
+import { DeleteOutline, EditOutlined } from "@material-ui/icons";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import React from "react";
 
@@ -56,13 +56,13 @@ export default function ChannelList({ action }) {
       .then((resp) => setChannels(resp.data.response.channels));
   }, [action, user, location]);
 
-  const renderChannel = (channel) => {
+  const renderChannel = (channel, index) => {
     return (
       <Grid item key={channel.id} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
           <CardMedia
             className={classes.cardMedia}
-            image={`https://source.unsplash.com/random?id=${channel.id}`}
+            image={`https://source.unsplash.com/random?${index}&id=${channel.id}`}
             title={channel.title}
             component={RouterLink}
             to={`/channel/${channel.id}`}

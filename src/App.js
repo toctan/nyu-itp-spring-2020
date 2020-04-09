@@ -14,6 +14,7 @@ import ChannelDelete from "./ChannelDelete";
 import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
 import AudioAttach from "./AudioAttach";
+import NoMatch404 from "./NoMatch";
 import Nav from "./Nav";
 import SignIn from "./SignIn";
 import User from "./User";
@@ -35,7 +36,7 @@ function RouteSwitch() {
         <Route path="/upload">
           <AudioUpload />
         </Route>
-        <Route path="/channel/create">
+        <Route exact path="/channel/create">
           <MarsbotHome />
           <ChannelForm />
         </Route>
@@ -48,8 +49,11 @@ function RouteSwitch() {
         <Route path="/subscriptions">
           <ChannelList action="fetchSubscribed" />
         </Route>
-        <Route path="/">
+        <Route exact path="/">
           <MarsbotHome />
+        </Route>
+        <Route path="*">
+          <NoMatch404 />
         </Route>
       </Switch>
 
