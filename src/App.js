@@ -13,7 +13,6 @@ import ChannelForm from "./ChannelForm";
 import ChannelDelete from "./ChannelDelete";
 import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
-import AudioAttach from "./AudioAttach";
 import NoMatch404 from "./NoMatch";
 import Nav from "./Nav";
 import SignIn from "./SignIn";
@@ -28,10 +27,6 @@ function RouteSwitch() {
       <Switch location={background || location}>
         <Route path="/signin">
           <SignIn />
-        </Route>
-        <Route path="/audio/:id/attach">
-          <MarsbotHome />
-          <AudioAttach />
         </Route>
         <Route path="/upload">
           <AudioUpload />
@@ -67,9 +62,6 @@ function RouteSwitch() {
           </Route>
           <Route path="/channel/:id/delete">
             <ChannelDelete />
-          </Route>
-          <Route path="/audio/:id/attach">
-            <AudioAttach />
           </Route>
         </>
       )}

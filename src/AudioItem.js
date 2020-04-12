@@ -1,6 +1,5 @@
 import {
   DeleteOutline,
-  MoreVert,
   PauseCircleOutline,
   PlayCircleOutline,
   Schedule,
@@ -12,15 +11,7 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
-  Menu,
-  MenuItem,
 } from "@material-ui/core";
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import {
-  usePopupState,
-  bindMenu,
-  bindHover,
-} from "material-ui-popup-state/hooks";
 import Moment from "react-moment";
 import React from "react";
 
@@ -28,12 +19,7 @@ import CategoryIcon from "./CategoryIcon";
 import ListActionItem from "./ListActionItem";
 
 export default function AudioItem(props) {
-  const location = useLocation();
   const { audio, playing, handlePlay, handleDelete, divider = true } = props;
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: "audio-item-more-actions",
-  });
   const venue = audio.venues[0];
   let title = "Unknown Audio",
     subTitle,
@@ -64,6 +50,7 @@ export default function AudioItem(props) {
         <ListItemText primary={title} secondary={subTitle} />
         <div>
           <ListActionItem
+            edge="start"
             icon={Schedule}
             text={
               <Moment
@@ -85,32 +72,6 @@ export default function AudioItem(props) {
             text="Delete"
             rootProps={{ onClick: () => handleDelete(audio.id) }}
           />
-
-          {/* <ListActionItem */}
-          {/*   icon={Add} */}
-          {/*   text="Add to channels" */}
-          {/*   rootProps={{ */}
-          {/*     component: RouterLink, */}
-          {/*     to: { */}
-          {/*       pathname: `/audio/${audio.id}/attach`, */}
-          {/*       state: { background: location } */}
-          {/*     } */}
-          {/*   }} */}
-          {/* /> */}
-
-          <ListActionItem icon={MoreVert} rootProps={bindHover(popupState)} />
-          <Menu {...bindMenu(popupState)}>
-            {/* <MenuItem onClick={() => handleDelete(audio.id)}>Delete</MenuItem> */}
-            <MenuItem
-              component={RouterLink}
-              to={{
-                pathname: `/audio/${audio.id}/attach`,
-                state: { background: location },
-              }}
-            >
-              Add to channels
-            </MenuItem>
-          </Menu>
         </div>
       </div>
       <ListItemSecondaryAction>
