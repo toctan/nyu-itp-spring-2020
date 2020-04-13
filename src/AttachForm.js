@@ -53,8 +53,7 @@ export default function AttachForm() {
   };
 
   const handleClose = () => {
-    if (background) history.goBack();
-    else history.push("/");
+    history.push(background || `/channel/${id}`);
   };
 
   if (loading)

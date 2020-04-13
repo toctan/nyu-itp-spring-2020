@@ -9,7 +9,12 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
-import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useHistory,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import React from "react";
 
 import qs from "qs";
@@ -23,6 +28,7 @@ import foursquare from "./APIClient";
 
 export default function ChannelView() {
   let { id } = useParams();
+  const history = useHistory();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
   const [loading, setLoading] = React.useState(true);
@@ -43,10 +49,18 @@ export default function ChannelView() {
       .then((channel) => {
         channel.id = id;
         setChannel(channel);
+        const path = location.pathname;
+        if (path.endsWith("/edit")) {
+          location.pathname = `/channel/${id}`;
+          history.replace(path, {
+            background: location,
+            channel: channel,
+          });
+        }
       })
       .catch((error) => {})
       .then(() => setLoading(false));
-  }, [id, user, location]);
+  }, [id, user, history, location]);
 
   const handleRemoveAudio = (audioId) => {
     if (

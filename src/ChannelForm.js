@@ -35,8 +35,7 @@ export default function ChannelForm() {
   };
 
   const handleClose = () => {
-    if (background) history.goBack();
-    else history.push("/");
+    history.push(background || "/");
   };
 
   const handleChange = (event) => {
