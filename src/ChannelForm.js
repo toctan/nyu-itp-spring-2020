@@ -29,7 +29,7 @@ export default function ChannelForm() {
     let action = "demo/marsbot/audio/channels/";
     action += editing ? "update" : "add";
     return foursquare.post(action, formData).then((response) => {
-      const channelId = channel.id || response.data.response.id;
+      const channelId = channel.id || response.id;
       history.push(editing ? background : `/channel/${channelId}`);
     });
   };

@@ -17,7 +17,7 @@ foursquare.interceptors.request.use((config) => {
 foursquare.interceptors.response.use(
   (response) => {
     // Any status code that lie within the range of 2xx cause this function to trigger
-    return response;
+    return response.data.response;
   },
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -33,5 +33,16 @@ foursquare.interceptors.response.use(
 
 foursquare.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
+
+foursquare.getUserAudios = async (userId) => {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const resp = await foursquare.get("demo/marsbot/audio/snippetuser", {
+    params: {
+      userId,
+      tz: tz,
+    },
+  });
+  return resp.audio;
+};
 
 export default foursquare;

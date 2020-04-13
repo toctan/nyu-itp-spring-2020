@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { DeleteOutline, EditOutlined } from "@material-ui/icons";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
 import ListActionItem from "./ListActionItem";
@@ -44,16 +44,17 @@ export default function ChannelList({ action }) {
   const classes = useStyles();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
+  let { userId = user.id } = useParams();
   const [channels, setChannels] = React.useState([]);
 
   React.useEffect(() => {
     foursquare
       .get(`demo/marsbot/audio/channels/${action}`, {
         params: {
-          userId: user.id,
+          userId,
         },
       })
-      .then((resp) => setChannels(resp.data.response.channels));
+      .then((resp) => setChannels(resp.channels));
   }, [action, user, location]);
 
   const renderChannel = (channel, index) => {

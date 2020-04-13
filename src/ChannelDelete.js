@@ -18,7 +18,7 @@ export default (props) => {
   React.useEffect(() => {
     if (!window.confirm("Are you sure you want to delete this channel?"))
       return handleCancel();
-    foursquare
+    return foursquare
       .post(
         "demo/marsbot/audio/channels/delete",
         qs.stringify({

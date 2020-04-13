@@ -40,8 +40,7 @@ export default function ChannelView() {
         },
         ejectErrorAlert: true,
       })
-      .then((resp) => {
-        const channel = resp.data.response;
+      .then((channel) => {
         channel.id = id;
         setChannel(channel);
       })
@@ -98,7 +97,16 @@ export default function ChannelView() {
             />
             {user.id === channel.user.id && (
               <div>
-                <ListActionItem edge="start" icon={Add} text="Add audio" />
+                <ListActionItem
+                  edge="start"
+                  icon={Add}
+                  text="Add audio"
+                  component={RouterLink}
+                  to={{
+                    pathname: `/channel/${channel.id}/attach`,
+                    state: { background: location },
+                  }}
+                />
                 <ListActionItem
                   icon={EditOutlined}
                   text="Edit"

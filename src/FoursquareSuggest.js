@@ -43,7 +43,7 @@ export default function FoursquareSuggest() {
               },
             })
             .then((resp) => {
-              setVenues(resp.data.response.minivenues);
+              setVenues(resp.minivenues);
             })
             .catch(console.log)
             .then(() => {

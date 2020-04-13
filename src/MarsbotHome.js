@@ -21,15 +21,7 @@ export default function MarsbotHome() {
   const [filterOn, setFilter] = React.useState(filter !== "off");
 
   React.useEffect(() => {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    foursquare
-      .get("demo/marsbot/audio/snippetuser", {
-        params: {
-          userId: user.id,
-          tz: tz,
-        },
-      })
-      .then((resp) => setAudios(resp.data.response.audio));
+    foursquare.getUserAudios(user.id).then(setAudios);
   }, [user]);
 
   const handleDelete = (audioId) => {

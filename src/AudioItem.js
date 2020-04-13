@@ -27,7 +27,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AudioItem(props) {
   const classes = useStyles();
-  const { audio, playing, handlePlay, handleDelete, divider = true } = props;
+  const {
+    audio,
+    action,
+    playing,
+    handlePlay,
+    handleDelete,
+    divider = true,
+  } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
     subTitle,
@@ -49,6 +56,11 @@ export default function AudioItem(props) {
     subTitle = venue.location.formattedAddress[0];
     category = venue.categories && venue.categories[0];
   }
+
+  const PlayIcon =
+    playing && playing.src === audio.url
+      ? PauseCircleOutline
+      : PlayCircleOutline;
 
   return (
     <ListItem divider={divider}>
@@ -82,28 +94,31 @@ export default function AudioItem(props) {
             }
           />
           <ListActionItem
-            icon={PlayCircleOutline}
+            icon={PlayIcon}
             text={audio.playCount || 0}
+            onClick={() => handlePlay(audio.url)}
           />
-          <ListActionItem
-            icon={DeleteOutline}
-            text="Delete"
-            onClick={() => handleDelete(audio.id)}
-          />
+          {handleDelete && (
+            <ListActionItem
+              icon={DeleteOutline}
+              text="Delete"
+              onClick={() => handleDelete(audio.id)}
+            />
+          )}
         </div>
       </div>
       <ListItemSecondaryAction>
-        <IconButton
-          onClick={() => handlePlay(audio.url)}
-          edge="end"
-          aria-label="play"
-        >
-          {playing && playing.src === audio.url ? (
-            <PauseCircleOutline fontSize="large" />
-          ) : (
-            <PlayCircleOutline fontSize="large" />
-          )}
-        </IconButton>
+        {action ? (
+          action(audio)
+        ) : (
+          <IconButton
+            onClick={() => handlePlay(audio.url)}
+            edge="end"
+            aria-label="play"
+          >
+            <PlayIcon fontSize="large" />
+          </IconButton>
+        )}
       </ListItemSecondaryAction>
     </ListItem>
   );

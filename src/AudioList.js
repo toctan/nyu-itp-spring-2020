@@ -22,7 +22,7 @@ export default function AudioList(props) {
   const [playing, setPlaying] = React.useState(null);
   const [hovering, setHovering] = React.useState(null);
   const [scrollTo, setScrollTo] = React.useState(null);
-  const { audios, header, handleDelete } = props;
+  const { audios, header, handleDelete, action, withMap = true } = props;
 
   React.useEffect(() => {
     const element = scrollRef && scrollRef.current;
@@ -45,32 +45,34 @@ export default function AudioList(props) {
   };
 
   const audioItemProps = {
+    action,
     playing,
     handlePlay,
     handleDelete,
   };
 
-  const audioItems = audios.map((audio, index) => (
-    <div
-      key={audio.id}
-      ref={scrollTo === audio.id ? scrollRef : null}
-      onMouseEnter={() => setHovering(audio.id)}
-      onMouseLeave={() => setHovering(null)}
-      className={hovering === audio.id ? classes.activeListItem : ""}
-    >
-      <AudioItem audio={audio} {...audioItemProps} />
-    </div>
-  ));
+  const audioList = (
+    <List disablePadding>
+      {header}
+      {audios.map((audio, index) => (
+        <div
+          key={audio.id}
+          ref={scrollTo === audio.id ? scrollRef : null}
+          onMouseEnter={() => setHovering(audio.id)}
+          onMouseLeave={() => setHovering(null)}
+          className={hovering === audio.id ? classes.activeListItem : ""}
+        >
+          <AudioItem audio={audio} {...audioItemProps} />
+        </div>
+      ))}
+    </List>
+  );
+  if (!withMap) return audioList;
 
   return (
     <Grid container>
       <Grid item className={classes.gridItem} xs={12} sm={5} md={4}>
-        <Paper>
-          <List disablePadding>
-            {header}
-            {audioItems}
-          </List>
-        </Paper>
+        <Paper>{audioList}</Paper>
       </Grid>
       <Grid item xs sm md className={classes.gridItem}>
         <AudioMap

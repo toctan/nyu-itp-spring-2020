@@ -23,7 +23,7 @@ export default class User {
     if (data) return new User(JSON.parse(data));
 
     const response = await foursquare.get(`/users/${userId}`);
-    const user = response.data.response.user;
+    const user = response.user;
     data = {
       id: user.id,
       firstName: user.firstName,

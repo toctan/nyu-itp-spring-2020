@@ -82,12 +82,19 @@ export default function Nav(props) {
   const classes = useStyles();
 
   const background = { background: location };
-  const tabs = [
-    ["/channels", <Apps />, null, "My channels"],
-    ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
-    ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
-    ["/upload", <Publish />, null, "Upload an audio"],
-  ];
+  const tabs = user
+    ? [
+        [`/user/${user.id}/channels`, <Apps />, null, "My channels"],
+        ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
+        [
+          "/channel/create",
+          <PlaylistAdd />,
+          background,
+          "Create a new channel",
+        ],
+        ["/upload", <Publish />, null, "Upload an audio"],
+      ]
+    : [];
   const path = window.location.pathname;
   const active = tabs.filter((t) => t[0] === path).length ? path : false;
 
