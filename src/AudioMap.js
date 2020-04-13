@@ -1,8 +1,8 @@
 import {
   Card,
   CardMedia,
-  Container,
   Grow,
+  Link,
   List,
   Popper,
   makeStyles,
@@ -16,6 +16,15 @@ import AudioItem from "./AudioItem";
 import findZoomAndCenter from "./utils";
 
 const useStyles = makeStyles((theme) => ({
+  popper: {
+    zIndex: theme.zIndex.tooltip,
+  },
+  card: {
+    width: theme.spacing(45),
+  },
+  cardMedia: {
+    paddingTop: "56.25%", // 16:9
+  },
   markerIcon: {
     fontSize: theme.typography.h3.fontSize,
     transform: "translate(-50%, -100%)",
@@ -56,36 +65,34 @@ function Marker(props) {
       />
 
       <Popper
-        {...bindPopper(popupState)}
         placement="top"
-        container={() => document.getElementsByClassName("gm-style")[0]}
         transition
+        className={classes.popper}
+        container={() => document.fullscreenElement || document.body}
+        {...bindPopper(popupState)}
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps} timeout={300}>
-            <Container
-              maxWidth="xs"
-              disableGutters
+            <Card
+              className={classes.card}
               onMouseEnter={() => setHovering(audio.id)}
               onMouseLeave={() => setHovering(null)}
             >
-              <Card>
+              <Link
+                target="_blank"
+                rel="noopener"
+                href={`https://foursquare.com/v/${venue.id}`}
+              >
                 <CardMedia
                   className={classes.cardMedia}
-                  height="160"
-                  component="img"
                   image={photoSrc}
                   title={venue.name}
                 />
-                <List disablePadding>
-                  <AudioItem
-                    audio={audio}
-                    divider={false}
-                    {...audioItemProps}
-                  />
-                </List>
-              </Card>
-            </Container>
+              </Link>
+              <List disablePadding>
+                <AudioItem audio={audio} divider={false} {...audioItemProps} />
+              </List>
+            </Card>
           </Grow>
         )}
       </Popper>

@@ -102,23 +102,19 @@ export default function ChannelView() {
                 <ListActionItem
                   icon={EditOutlined}
                   text="Edit"
-                  rootProps={{
-                    component: RouterLink,
-                    to: {
-                      pathname: `/channel/${channel.id}/edit`,
-                      state: { background: location, channel: channel },
-                    },
+                  component={RouterLink}
+                  to={{
+                    pathname: `/channel/${channel.id}/edit`,
+                    state: { background: location, channel: channel },
                   }}
                 />
                 <ListActionItem
                   icon={DeleteOutline}
                   text="Delete"
-                  rootProps={{
-                    component: RouterLink,
-                    to: {
-                      pathname: `/channel/${channel.id}/delete`,
-                      state: { background: location },
-                    },
+                  component={RouterLink}
+                  to={{
+                    pathname: `/channel/${channel.id}/delete`,
+                    state: { background: location },
                   }}
                 />
               </div>

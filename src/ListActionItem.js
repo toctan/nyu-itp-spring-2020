@@ -1,29 +1,39 @@
-import { Box, IconButton, makeStyles } from "@material-ui/core";
+import { Typography, IconButton, makeStyles } from "@material-ui/core";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-  listActionIcon: {
+  root: {
     marginRight: theme.spacing(1),
     "&:last-child": {
       marginRight: 0,
     },
+    "&:disabled": {
+      color: theme.palette.text.secondary,
+      pointerEvents: "auto",
+    },
+  },
+  text: {
+    marginLeft: theme.spacing(0.5),
   },
 }));
 
 export default function ListActionItem(props) {
-  const { text, edge, rootProps } = props;
+  const { text, icon, ...rest } = props;
   const classes = useStyles();
   return (
     <IconButton
-      edge={edge}
+      disabled={!(props.onClick || props.href || props.to)}
       size="small"
-      className={classes.listActionIcon}
-      {...rootProps}
+      classes={{
+        root: classes.root,
+        label: classes.label,
+      }}
+      {...rest}
     >
       <props.icon fontSize="small" />
-      <Box component="span" fontSize="body2.fontSize" ml={0.5}>
+      <Typography component="span" variant="body2" className={classes.text}>
         {text}
-      </Box>
+      </Typography>
     </IconButton>
   );
 }

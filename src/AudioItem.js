@@ -11,6 +11,7 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
+  makeStyles,
 } from "@material-ui/core";
 import Moment from "react-moment";
 import React from "react";
@@ -18,7 +19,14 @@ import React from "react";
 import CategoryIcon from "./CategoryIcon";
 import ListActionItem from "./ListActionItem";
 
+const useStyles = makeStyles((theme) => ({
+  listItemBody: {
+    minWidth: 0,
+  },
+}));
+
 export default function AudioItem(props) {
+  const classes = useStyles();
   const { audio, playing, handlePlay, handleDelete, divider = true } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
@@ -30,6 +38,7 @@ export default function AudioItem(props) {
     title = (
       <Link
         color="inherit"
+        underline="none"
         target="_blank"
         rel="noopener"
         href={`https://foursquare.com/v/${venue.id}`}
@@ -46,8 +55,17 @@ export default function AudioItem(props) {
       <ListItemAvatar>
         <CategoryIcon category={category} />
       </ListItemAvatar>
-      <div>
-        <ListItemText primary={title} secondary={subTitle} />
+      <div className={classes.listItemBody}>
+        <ListItemText
+          primary={title}
+          primaryTypographyProps={{
+            component: "h2",
+            noWrap: true,
+            title: venue && venue.name,
+          }}
+          secondary={subTitle}
+          secondaryTypographyProps={{ noWrap: true, title: subTitle }}
+        />
         <div>
           <ListActionItem
             edge="start"
@@ -70,7 +88,7 @@ export default function AudioItem(props) {
           <ListActionItem
             icon={DeleteOutline}
             text="Delete"
-            rootProps={{ onClick: () => handleDelete(audio.id) }}
+            onClick={() => handleDelete(audio.id)}
           />
         </div>
       </div>
