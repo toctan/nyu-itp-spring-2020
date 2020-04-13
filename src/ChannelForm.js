@@ -1,14 +1,8 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
+import ResponsiveDialog from "./ResponsiveDialog";
 import foursquare from "./APIClient";
 
 export default function ChannelForm() {
@@ -34,27 +28,18 @@ export default function ChannelForm() {
     });
   };
 
-  const handleClose = () => {
-    history.push(background || "/");
-  };
-
   const handleChange = (event) => {
     const input = event.target;
     setChannel({ ...channel, [input.name]: input.value });
   };
 
   return (
-    <Dialog
-      open={true}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">
-          {editing ? "Edit" : "Create a new channel"}
-        </DialogTitle>
-        <input name="id" type="hidden" value={channel.id} />
-        <DialogContent>
+    <ResponsiveDialog
+      title={editing ? "Edit" : "Create a new channel"}
+      handleSubmit={handleSubmit}
+      closeURL="/"
+      content={
+        <>
           <TextField
             name="title"
             value={channel.title}
@@ -77,16 +62,8 @@ export default function ChannelForm() {
             rows={4}
             rowsMax={10}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+        </>
+      }
+    />
   );
 }

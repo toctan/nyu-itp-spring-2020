@@ -1,18 +1,14 @@
 import {
   Backdrop,
-  Button,
   Checkbox,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   makeStyles,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
 import AudioList from "./AudioList";
+import ResponsiveDialog from "./ResponsiveDialog";
 import User from "./User";
 import foursquare from "./APIClient";
 
@@ -52,10 +48,6 @@ export default function AttachForm() {
       });
   };
 
-  const handleClose = () => {
-    history.push(background || `/channel/${id}`);
-  };
-
   if (loading)
     return (
       <Backdrop open={loading} className={classes.backdrop}>
@@ -64,31 +56,20 @@ export default function AttachForm() {
     );
 
   return (
-    <Dialog
-      open={true}
-      maxWidth="xs"
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <form onSubmit={handleSubmit}>
-        <input name="id" type="hidden" value={id} />
-        <DialogTitle id="form-dialog-title">Add audios to channel</DialogTitle>
-        <DialogContent>
+    <ResponsiveDialog
+      title="Add audios to channel"
+      handleSubmit={handleSubmit}
+      closeURL={`/channel/${id}`}
+      content={
+        <>
+          <input name="id" type="hidden" value={id} />{" "}
           <AudioList
             audios={audios}
             withMap={false}
             action={(audio) => <Checkbox name="audioFileId" value={audio.id} />}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+        </>
+      }
+    />
   );
 }
