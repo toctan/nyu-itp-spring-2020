@@ -13,24 +13,25 @@
     "axios": "^0.19.2",
     "google-map-react": "^1.1.6",
     "js-cookie": "^2.2.1",
-    "material-ui-dropzone": "^2.4.8",
     "material-ui-popup-state": "^1.5.3",
     "moment": "^2.24.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-dropzone": "^10.2.2",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
-    "throttle-debounce": "^2.1.0"
+    "throttle-debounce": "^2.1.0",
+    "videojs-record": "^3.11.0"
   },
   "engines": {
     "node": "13.x",
     "yarn": "1.x"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -52,5 +53,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://marsbot-audio.herokuapp.com/"
+  "proxy": "https://marsbot-audio.herokuapp.com/",
+  "devDependencies": {
+    "react-app-rewired": "^2.1.5"
+  }
 }

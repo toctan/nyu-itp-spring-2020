@@ -55,7 +55,7 @@ export default function ChannelList({ action }) {
         },
       })
       .then((resp) => setChannels(resp.channels));
-  }, [action, user, location]);
+  }, [action, userId, location]);
 
   const renderChannel = (channel, index) => {
     return (

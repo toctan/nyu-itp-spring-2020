@@ -41,6 +41,7 @@ export default function FoursquareSuggest() {
                 query: query,
                 limit: 5,
               },
+              ejectErrorAlert: true,
             })
             .then((resp) => {
               setVenues(resp.minivenues);
@@ -78,10 +79,11 @@ export default function FoursquareSuggest() {
         renderInput={(params) => (
           <TextField
             {...params}
-            margin="normal"
+            margin="none"
             label="Attach to a location"
             variant="outlined"
             fullWidth
+            required
             onChange={handleSuggest}
             onFocus={getCurrentLocation}
             InputProps={{

@@ -92,7 +92,7 @@ export default function Nav(props) {
           background,
           "Create a new channel",
         ],
-        ["/upload", <Publish />, null, "Upload an audio"],
+        ["/audio/upload", <Publish />, background, "Upload an audio"],
       ]
     : [];
   const path = window.location.pathname;

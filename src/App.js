@@ -7,15 +7,15 @@ import {
 } from "react-router-dom";
 import React from "react";
 
-import MarsbotHome from "./MarsbotHome";
-import AudioUpload from "./AudioUpload";
-import ChannelForm from "./ChannelForm";
 import AttachForm from "./AttachForm";
+import AudioForm from "./AudioForm.js";
 import ChannelDelete from "./ChannelDelete";
+import ChannelForm from "./ChannelForm";
 import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
-import NoMatch404 from "./NoMatch";
+import MarsbotHome from "./MarsbotHome";
 import Nav from "./Nav";
+import NoMatch404 from "./NoMatch";
 import SignIn from "./SignIn";
 import User from "./User";
 
@@ -29,8 +29,9 @@ function RouteSwitch() {
         <Route path="/signin">
           <SignIn />
         </Route>
-        <Route path="/upload">
-          <AudioUpload />
+        <Route path="/audio/upload">
+          <MarsbotHome />
+          <AudioForm />
         </Route>
         <Route exact path="/channel/create">
           <MarsbotHome />
@@ -62,6 +63,9 @@ function RouteSwitch() {
 
       {background && (
         <>
+          <Route path="/audio/upload">
+            <AudioForm />
+          </Route>
           <Route path="/channel/create">
             <ChannelForm />
           </Route>
