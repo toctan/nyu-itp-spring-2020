@@ -8,7 +8,7 @@ import {
 import React from "react";
 
 import AttachForm from "./AttachForm";
-import AudioForm from "./AudioForm.js";
+import AudioUpload from "./AudioUpload.js";
 import ChannelDelete from "./ChannelDelete";
 import ChannelForm from "./ChannelForm";
 import ChannelList from "./ChannelList";
@@ -16,6 +16,7 @@ import ChannelView from "./ChannelView";
 import MarsbotHome from "./MarsbotHome";
 import Nav from "./Nav";
 import NoMatch404 from "./NoMatch";
+import SettingForm from "./SettingForm";
 import SignIn from "./SignIn";
 import User from "./User";
 
@@ -31,7 +32,7 @@ function RouteSwitch() {
         </Route>
         <Route path="/audio/upload">
           <MarsbotHome />
-          <AudioForm />
+          <AudioUpload />
         </Route>
         <Route exact path="/channel/create">
           <MarsbotHome />
@@ -53,6 +54,14 @@ function RouteSwitch() {
         <Route path="/subscriptions">
           <ChannelList action="fetchSubscribed" />
         </Route>
+        <Route path="/settings/name">
+          <MarsbotHome />
+          <SettingForm type="name" />
+        </Route>
+        <Route path="/settings/jingle">
+          <MarsbotHome />
+          <SettingForm type="jingle" />
+        </Route>
         <Route exact path="/">
           <MarsbotHome />
         </Route>
@@ -64,7 +73,7 @@ function RouteSwitch() {
       {background && (
         <>
           <Route path="/audio/upload">
-            <AudioForm />
+            <AudioUpload />
           </Route>
           <Route path="/channel/create">
             <ChannelForm />
@@ -77,6 +86,12 @@ function RouteSwitch() {
           </Route>
           <Route path="/channel/:id/delete">
             <ChannelDelete />
+          </Route>
+          <Route path="/settings/name">
+            <SettingForm type="name" />
+          </Route>
+          <Route path="/settings/jingle">
+            <SettingForm type="jingle" />
           </Route>
         </>
       )}

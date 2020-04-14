@@ -1,5 +1,6 @@
 import "videojs-record/dist/css/videojs.record.css";
 import "videojs-record/dist/videojs.record.js";
+// import "videojs-record/dist/plugins/videojs.record.vmsg.js";
 
 import "recordrtc";
 import "video.js/dist/video-js.css";
@@ -18,7 +19,7 @@ const debug = process.env.NODE_ENV !== "production";
 const defaultOptions = {
   controls: true,
   controlBar: {
-    deviceButton: false,
+    // deviceButton: false,
     fullscreenToggle: false,
   },
   fluid: true,
@@ -48,6 +49,8 @@ const defaultOptions = {
       video: false,
       maxLength: 10,
       debug,
+      // audioEngine: "vmsg",
+      // audioWebAssemblyURL: "https:github.com/Kagami/vmsg/raw/master/vmsg.wasm",
     },
   },
 };
@@ -59,9 +62,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const resetRecord = (record) => {
+  record.surfer.pause();
+  record.surfer.setupPlaybackEvents(true);
+  record.player.loadingSpinner.show();
+  record.surfer.surfer.once(Event.READY, () => {
+    record._processing = false;
+  });
+};
+
 export default function AudioRecorder({ file, setFile }) {
   const classes = useStyles();
   const audioRef = React.useRef(null);
+  const [player, setPlayer] = React.useState(null);
   const [record, setRecord] = React.useState(null);
   const { getRootProps, getInputProps } = useDropzone({
     accept: "audio/*",
@@ -76,7 +89,8 @@ export default function AudioRecorder({ file, setFile }) {
   React.useEffect(() => {
     const player = videojs(audioRef.current, defaultOptions);
     player.one("ready", () => {
-      player.record().getDevice();
+      // wait for UI setup, then start device automatically
+      // setTimeout(() => player.record().getDevice(), 2000);
     });
 
     player.on("deviceReady", () => {
@@ -91,15 +105,30 @@ export default function AudioRecorder({ file, setFile }) {
       console.warn(error);
     });
 
+    setPlayer(player);
+
     return () => {
       player.dispose();
     };
   }, [setFile]);
 
   React.useEffect(() => {
-    if (!file) return;
-    record.engine.recordedData = file;
-    record.onRecordComplete();
+    // start device automatically if file already exsits;
+    if (file && player && !record) {
+      player.one("ready", () => {
+        player.record().getDevice();
+      });
+
+      const rec = player.record();
+      rec.surfer && rec.getDevice();
+    }
+  }, [file, player, record]);
+
+  React.useEffect(() => {
+    if (file && record) {
+      resetRecord(record);
+      record.load(file);
+    }
   }, [file, record]);
 
   return (
@@ -108,6 +137,11 @@ export default function AudioRecorder({ file, setFile }) {
       {...getRootProps({
         onClick: (e) => {
           if (e.target.nodeName !== "WAVE") e.stopPropagation();
+          if (player && player.deviceButton.el_ === e.target) {
+            player.on("deviceReady", () => {
+              player.record().start();
+            });
+          }
         },
       })}
     >

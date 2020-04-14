@@ -82,20 +82,21 @@ export default function Nav(props) {
   const classes = useStyles();
 
   const background = { background: location };
-  const tabs = user
-    ? [
-        [`/user/${user.id}/channels`, <Apps />, null, "My channels"],
-        ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
-        [
-          "/channel/create",
-          <PlaylistAdd />,
-          background,
-          "Create a new channel",
-        ],
-        ["/audio/upload", <Publish />, background, "Upload an audio"],
-      ]
-    : [];
-  const path = window.location.pathname;
+  let tabs = [],
+    menus = [];
+  if (user) {
+    tabs = [
+      [`/user/${user.id}/channels`, <Apps />, null, "My channels"],
+      ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
+      ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
+      ["/audio/upload", <Publish />, background, "Upload an audio"],
+    ];
+    menus = [
+      ["/settings/name", background, "Set Name"],
+      ["/settings/jingle", background, "Set Jingle"],
+    ];
+  }
+  const path = location.pathname;
   const active = tabs.filter((t) => t[0] === path).length ? path : false;
 
   const handleLogOut = () => {
@@ -161,13 +162,21 @@ export default function Nav(props) {
                 <MenuItem component={Link} href={user.profile} color="inherit">
                   {`${user.firstName}'s Profile`}
                 </MenuItem>
-                <MenuItem
-                  component={Link}
-                  href="https://foursquare.com/settings"
-                  color="inherit"
-                >
-                  Settings
-                </MenuItem>
+                {menus.map((m) => {
+                  const [path, state, title] = m;
+                  return (
+                    <MenuItem
+                      component={RouterLink}
+                      key={path}
+                      to={{
+                        pathname: path,
+                        state: state,
+                      }}
+                    >
+                      {title}
+                    </MenuItem>
+                  );
+                })}
                 <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
               </Menu>
             </>
