@@ -107,7 +107,7 @@ export default function AudioRecorder({ file, setFile }) {
       data-vjs-player
       {...getRootProps({
         onClick: (e) => {
-          if (e.target.nodeName === "BUTTON") e.stopPropagation();
+          if (e.target.nodeName !== "WAVE") e.stopPropagation();
         },
       })}
     >
